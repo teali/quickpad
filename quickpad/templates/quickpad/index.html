@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/style.css">-->	
+		<script src="{{ STATIC_URL }}quickpad/jquery-1.11.1.min.js"></script>
+		<script src="{{ STATIC_URL }}quickpad/script.js"></script>
+	</head>
+
+	<body>
+		<div class="header">
+			
+			<div class="menu"> Pad.io </div>
+			
+			<div class="tabs">
+				<div class="tab">
+					<div class="text">Hello-World.py</div>
+					<div class="accent"></div>
+				</div>
+				
+				<div class="tab">
+					<div class="text">Just-testing-coding.java</div>
+				</div>	
+				
+				<div class="newTab"><input type="image" src="{{ STATIC_URL }}quickpad/New_Tab_Icon.png"></div>
+			</div>
+			
+			<div class="icons">
+				<input type="image" src="{{ STATIC_URL }}quickpad/SettingsIcon.png" >
+				<input type="image" src="{{ STATIC_URL }}quickpad/DLicon.png" >
+			</div>
+			
+		</div>
+		
+		<div class="content"></div>
+	</body>
+</html>
