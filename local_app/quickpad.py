@@ -21,34 +21,41 @@ def hotkey_listener():
 	file_listener.addHotkey(['Ctrl', 'Alt','7'],get_clipboard)
 	file_listener.start()
 
+def set_expiration(exp):
+	def exp_closure(sysTrayIcon):
+		f_data = open("exp.dat","w")
+		f_data.write(str(exp))
+		f_data.close()
+	return exp_closure
+
+def about(sysTrayIcon): 
+	print "About Quickpad"
+
 if __name__ == '__main__':
     import itertools, glob
     listener = multiprocessing.Process(target=hotkey_listener)
     listener.start()
     icons = itertools.cycle(glob.glob('*.ico'))
     hover_text = "Quickpad"
-    def set_expiration(sysTrayIcon): print "Set expiration"
-    def about(sysTrayIcon): print "About Quickpad"
+
     def switch_icon(sysTrayIcon):
         sysTrayIcon.icon = icons.next()
         sysTrayIcon.refresh_icon()
-    menu_options = (('File Expiration', icons.next(), set_expiration),
-    				('About Quickpad', icons.next(), (('Say Hello to Simon', icons.next(), setexpiration),
-                                                  ('Switch Icon', icons.next(), setexpiration),
-                                                 ))
+    menu_options = (('File Expiration', 
+    				 icons.next(), 
+    				 (('10 Minutes', icons.next(), set_expiration(10)),
+                      ('1 Hour', icons.next(), set_expiration(60)),
+                      ('1 Day', icons.next(), set_expiration(1440)),
+                      ('1 Week', icons.next(), set_expiration(10080)),
+                      ('2 Weeks', icons.next(), set_expiration(20160)),
+                      ('4 Weeks', icons.next(), set_expiration(40320)),
+                     )),
+    				('About Quickpad', 
+    				 icons.next(), 
+    				 about)
     			   )
 
-
-    '''    
-    menu_options = (('Say Hello', icons.next(), hello),
-                    ('Switch Icon', None, switch_icon),
-                    ('A sub-menu', icons.next(), (('Say Hello to Simon', icons.next(), simon),
-                                                  ('Switch Icon', icons.next(), switch_icon),
-                                                 ))
-                   )
-	'''
     def quit(sysTrayIcon): 
-    	print 'Bye, then.'
     	global listener
     	listener.terminate()
     
