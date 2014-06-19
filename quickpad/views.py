@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import StreamingHttpResponse, HttpResponse
 from django.template import RequestContext, loader
 from django.core.files.base import ContentFile
 from django.core.context_processors import csrf
@@ -57,7 +57,7 @@ def direct_dl(request):
 	if curFile.expTime < datetime.utcnow().replace(tzinfo=utc):		
 		curFile.delete()
 		return HttpResponse(status=404)	
-	response = HttpResponse(curFile.file, content_type=types_map[str(curFile.fileExt)])
+	response = StreamingHttpResponse(curFile.file, content_type=types_map[str(curFile.fileExt)])
 	response['Content-Disposition'] = 'attachment; filename=%s' % (curFile.fileName + curFile.fileExt)
 	
 	return response

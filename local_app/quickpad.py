@@ -16,7 +16,11 @@ def clipboard_to_quickpad(sysTrayIcon=None):
 	#gets file from clipboard(file or copied text)
 	OpenClipboard()
 	if IsClipboardFormatAvailable(CF_HDROP) != 0 and len(GetClipboardData(CF_HDROP)) == 1 and os.path.getsize(GetClipboardData(CF_HDROP)[0]) < MAX_FILESIZE:			
-		contents = open(GetClipboardData(CF_HDROP)[0]).read()		
+		try:
+			fin = open(GetClipboardData(CF_HDROP)[0])
+			contents = fin.read()
+			fin.close()
+		except: return
 	#fix string size(not len())
 	elif IsClipboardFormatAvailable(CF_TEXT) != 0 and len(GetClipboardData(CF_TEXT)) < MAX_FILESIZE:
 		contents =  GetClipboardData(CF_TEXT)
