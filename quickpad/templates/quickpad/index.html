@@ -2,15 +2,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<!--<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/style.css">-->	
-		<script src="{{ STATIC_URL }}quickpad/jquery-1.11.1.min.js"></script>
-		<script src="{{ STATIC_URL }}quickpad/script.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/style.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src= "{{ STATIC_URL }}quickpad/script.js">
+		
+		</script>
 	</head>
 
 	<body>
 		<div class="header">
 			
-			<div class="menu"> Pad.io </div>
+			<div class="menu"> QuickPad.io </div>
 			
 			<div class="tabs">
 				<div class="tab">
@@ -19,7 +21,7 @@
 				</div>
 				
 				<div class="tab">
-					<div class="text">Just-testing-coding.java</div>
+					<div class="text">I-really-hate-coding.java</div>
 				</div>	
 				
 				<div class="newTab"><input type="image" src="{{ STATIC_URL }}quickpad/New_Tab_Icon.png"></div>
@@ -28,10 +30,57 @@
 			<div class="icons">
 				<input type="image" src="{{ STATIC_URL }}quickpad/SettingsIcon.png" >
 				<input type="image" src="{{ STATIC_URL }}quickpad/DLicon.png" >
+				
 			</div>
 			
 		</div>
 		
-		<div class="content"></div>
+		<div class="sidebar">
+			<div class="shortcuts">
+				<input type="image" src="{{ STATIC_URL }}quickpad/open.png" >
+				<input type="image" src="{{ STATIC_URL }}quickpad/theme.png" >
+				<input type="image" src="{{ STATIC_URL }}quickpad/upload.png" >
+			</div>
+			<input type="image" class= "collapse" src="{{ STATIC_URL }}quickpad/collapse.png">
+			<input type="image" class= "expand" src ="{{ STATIC_URL }}quickpad/expand.png">
+			<div class="settings">
+
+				<div class= "theme">
+					<p>Theme</p><br>
+					<select>
+						<option value="volvo">Alpha</option>
+						<option value="saab">Beta</option>
+						<option value="mercedes">Zenburn</option>
+						<option value="audi">TonySucks</option>
+					</select>
+				</div>
+
+				<div class= "size">	
+					<p>Size</p><br>
+					<select>
+						<option value="volvo">8</option>
+						<option value="saab">10</option>
+						<option value="mercedes">12</option>
+						<option value="audi">14</option>
+					</select>
+				</div>
+
+				<div class= "font">
+					<p>Font</p><br>
+					<select>
+						<option value="volvo">Consolas</option>
+						<option value="saab">Times New Roman</option>
+						<option value="mercedes">Calibri</option>
+						<option value="audi">Comic Sans</option>
+					</select>
+				</div>
+
+			</div>
+		</div>
+		
+		
+		
+		
+		
 	</body>
 </html>
