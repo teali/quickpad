@@ -169,11 +169,12 @@ select:focus{
 }
 .expand{
 	float:right;
-	margin-right:-2em;
+	margin-right:-5em;
 	display:none;
 }
 .shortcuts{
+	width:2em;
 	display:none;
-	margin-left:-.3em;
-	float:left;
+	margin-right:0.5em;
+	float:right;
 }

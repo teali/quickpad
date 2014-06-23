@@ -1,19 +1,27 @@
 $(function(){ 
 
     $(".collapse").on('click',function(e){
-		$(".settings").css("display","none");
-		$(".sidebar").css("width", "2.5em");
 		$(this).css("display","none");
-    	$(".expand").css("display","block");
-    	$(".shortcuts").css("display","block");
+
+		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){
+			$(".settings").fadeOut().css("display","none");
+			$(".expand").css("display","block");
+    		$(".shortcuts").fadeIn().css("display","block");
+		});
+		
+    	
     });
 
     $(".expand").on('click',function(e){
-		$(".settings").css("display","block");
-		$(".sidebar").css("width", "13em");
+    	$(".shortcuts").fadeOut().css("display","none");
 		$(this).css("display","none");
-		$(".collapse").css("display","block");
-		$(".shortcuts").css("display","none");
+		$(".settings").css("display","block");
+		$(".sidebar").animate({left:"0em"},"fast","linear",function(){
+			$(".collapse").css("display","block");
+		});
+		
+		
+		
     });
 
 });
