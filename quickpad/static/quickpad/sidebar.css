@@ -1,0 +1,81 @@
+.sidebar{
+	border-style:solid;
+	border-width:1px;
+	border-color:#A9A9A9;
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	font-size:1em;
+	position:fixed;
+	top: 0;
+	left: 0;
+	padding: 3.5em 0 0 1em;
+	height:100%;
+	width:13em;
+	background-color:#EAEAEA;
+	z-index:0;
+	
+}
+
+.thumbnail{
+	float:left;
+	width:1em;
+	height:1em;
+}
+.folder{
+	position:relative;
+	margin: 0 0 0 1em;
+	
+}
+.file{
+	position:relative;
+	margin: 0 0 0 1em;
+
+}
+div.settings>div>p{
+	font-size:0.85em;
+	display:inline;
+	color:#252525;
+}
+
+select{
+
+	border-style:solid;
+	border-width:1px;
+    -webkit-appearance: none; 
+    -moz-appearance: none;  
+    width:13em;
+    background: url("drop.png") no-repeat;
+
+    background-position: 151px -1px;
+    background-color:white;
+    text-indent: 0.01px;
+	text-overflow: "";
+
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	font-size:0.85em;
+	margin: 0 0 0 0;
+	margin-left:5px;
+	 -khtml-user-select: none;
+	 -moz-user-select: none;
+	 -ms-user-select: none;
+	  user-select: none;
+	 -webkit-touch-callout: none;
+	 -webkit-user-select: none;
+}
+select:focus{
+   outline:none;
+}
+.collapse{
+	float:right;
+	margin-right:-2em;
+}
+.expand{
+	float:right;
+	margin-right:-5em;
+	display:none;
+}
+.shortcuts{
+	width:2em;
+	display:none;
+	margin-right:0.5em;
+	float:right;
+}
