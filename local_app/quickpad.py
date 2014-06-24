@@ -5,6 +5,7 @@ import multiprocessing
 import requests
 import json
 from win32clipboard import *
+from tendo import singleton
 
 MAX_FILESIZE = 1000000L
 
@@ -56,6 +57,8 @@ def set_expiration(exp):
 
 def about(sysTrayIcon): 
 	print "About Quickpad"
+
+me = singleton.SingleInstance()
 
 if __name__ == '__main__':
 		import itertools, glob
