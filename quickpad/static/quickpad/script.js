@@ -1,10 +1,3 @@
-
-function myCookie(callback){
-	$.get( "mycookie").done(function(data){
-		callback(data);
-	});
-}
-
 $(function(){
 	var mydata
 	function getCookie(name) {
@@ -35,8 +28,26 @@ $(function(){
 		}
 	});
 
-	var arr = { 'file': "print \"It works!\"", 'fileName' : "JSONtest", 'fileExt':".py",'eDays':'99','eHours':'1', 'eMinutes':'1' };
-	var tab = {'tabs' : 'None', 'active':'None'};
+	var arr = { 'file': "print \"It works!\"", 
+				'fileName' : "JSONtest", 
+				'fileExt':".py",
+				'eDays':'99',
+				'eHours':'1', 
+				'eMinutes':'1' };
+
+	var tab = { 'tabs' : 'None', 
+				'active':'None'};
+
+	var settings = {'font':'Consolas',
+					'fontSize':'12',
+					'style':'Monokai'};
+
+	//checks if cookies are enabled
+	$.get( "mycookie").done(function(data){
+		console.log(data);
+	});
+
+	//changes tabs for session
 	$.ajax({
     url: 'settabs',
 		type: 'POST',
@@ -47,6 +58,20 @@ $(function(){
 			console.log(data);
 		}
 	});
+
+	//changes settings for session
+	$.ajax({
+    url: 'setsettings',
+		type: 'POST',
+		data: JSON.stringify(settings),
+		contentType: 'application/json; charset=utf-8',
+		dataType: 'json',
+		success: function(data) {
+			console.log(data);
+		}
+	});
+
+	//au(async upload) uploads a file
 	$.ajax({
     url: 'au',
 		type: 'POST',
@@ -57,58 +82,12 @@ $(function(){
 			console.log(data['link']);
 		}
 	});
-	$.get( "d/0Tbx84d8", function( data, textStatus, jqXHR ) {
+
+	//downloads a file
+	$.get( "d/jfElnrd2", function( data, textStatus, jqXHR ) {
 		console.log( jqXHR.getResponseHeader('Content-Disposition').replace('attachment; filename=',''));
 	});
-	myCookie(function(data){console.log(data);});
-	/*
-	$.get( "mycookie").done(function(data){
-		console.log(data);
-	});*/
-
 });
-
-function myCookie(callback){
-	$.get( "mycookie").done(function(data){
-		callback(data);
-	});
-}
-
-
-function upload(file,fileName,fileExt,expDays,expHours,expMinutes){
-	var arr = { 'file': file, 'fileName' : fileName, 'fileExt':fileExt,'eDays':expDays,'eHours': expHours, 'eMinutes': expMinutes};
-	var status = false;
-	$.ajax({
-    url: 'au',
-		type: 'POST',
-		data: JSON.stringify(arr),
-		contentType: 'application/json; charset=utf-8',
-		dataType: 'json',
-		success: function(data) {status = true;},
-	});
-	return status;
-}
-
-function getFile(fileId){
-	var response = {}
-	response['status'] = false;
-	$.get( "d/"+fileId, function( data, textStatus, jqXHR ) {
-		response['status'] = true;
-		response['file'] = data;
-		response['fileName'] = jqXHR.getResponseHeader('Content-Disposition').replace('attachment; filename=','');
-	});
-	return response;
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

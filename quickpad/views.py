@@ -48,6 +48,7 @@ def upload(request):
 
 
 def direct_dl(request):
+	print request.path
 	fId= request.path
 	fId = fId[fId.rfind('/')+1:]	
 	
@@ -94,7 +95,7 @@ def change_tabs(request):
 		request.session['active'] = data['active']
 	except:
 		return HttpResponse(status=400)
-	return HttpResponse('test')
+	return HttpResponse('')
 
 
 def change_settings(request):
