@@ -43,7 +43,7 @@ $(function(){
 					'style':'Monokai'};
 
 	//checks if cookies are enabled
-	$.get( "mycookie").done(function(data){
+	$.get("mycookie").done(function(data){
 		console.log(data);
 	});
 

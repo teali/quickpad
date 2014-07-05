@@ -6,6 +6,9 @@ import requests
 import json
 from win32clipboard import *
 from tendo import singleton
+from Tkinter import Tk, Frame, Label, BOTH
+from PIL import Image, ImageTk
+import webbrowser
 
 MAX_FILESIZE = 1000000L
 
@@ -38,14 +41,16 @@ def clipboard_to_quickpad(sysTrayIcon=None):
 	client.get(URL,cookies=dict(CSRF_COOKIE=''))
 	cookies = dict(client.cookies)
 	csrftoken = client.cookies['csrftoken']
-	data = { 'file': contents, 'fileName' : "JSONtest", 'fileExt':".py",'eDays':'0','eHours':'0', 'eMinutes': exp_time }
+	data = { 'file': contents, 'fileName' : "paste", 'fileExt':".txt",'eDays':'0','eHours':'0', 'eMinutes': exp_time }
 	headers = {'Content-type': 'application/json',  "X-CSRFToken":csrftoken}
 	r = requests.post(URL+"au", data=json.dumps(data), headers=headers,cookies=cookies)
-	print r.json()
+	webbrowser.open("http://localhost:8000/"+r.json()["link"])
+	#deployment
+	#webbrowser.open("http://www.quickpad.io/"+r.json()["link"])
 
 def hotkey_listener():
 	file_listener = pyhk.pyhk()
-	file_listener.addHotkey(['Ctrl', 'Alt','7'],clipboard_to_quickpad)
+	file_listener.addHotkey(['Ctrl', 'Alt','K'],clipboard_to_quickpad)
 	file_listener.start()
 
 def set_expiration(exp):
@@ -55,35 +60,59 @@ def set_expiration(exp):
 		f_data.close()
 	return exp_closure
 
-def about(sysTrayIcon): 
-	print "About Quickpad"
+class AboutFrame(Frame):  
+    def __init__(self, parent):
+        Frame.__init__(self, parent, background="white")   
+         
+        self.parent = parent      
+        self.parent.title("Quickpad")
+        self.pack(fill=BOTH, expand=1)
+        self.centerWindow()
 
-me = singleton.SingleInstance()
+    def centerWindow(self):
+      
+        w = 500
+        h = 300
+
+        sw = self.parent.winfo_screenwidth()
+        sh = self.parent.winfo_screenheight()
+        
+        x = (sw - w)/2
+        y = (sh - h)/2
+        self.parent.geometry('%dx%d+%d+%d' % (w, h, x, y))
+
+def about(sysTrayIcon): 
+	root = Tk()
+	root.wm_iconbitmap('quickpad_full.ico')
+	app = AboutFrame(root)
+
+	bg = ImageTk.PhotoImage(Image.open("About-Banner.jpg"))
+	panel = Label(root, image=bg)
+	panel.pack(side='top', fill='both', expand='yes')
+
+	root.mainloop() 
 
 if __name__ == '__main__':
 		import itertools, glob
 		listener = multiprocessing.Process(target=hotkey_listener)
 		listener.start()
-		icons = itertools.cycle(glob.glob('*.ico'))
+		icon = "quickpad16.ico"
 		hover_text = "Quickpad"
 
-		def switch_icon(sysTrayIcon):
-				sysTrayIcon.icon = icons.next()
-				sysTrayIcon.refresh_icon()
 		menu_options = (('Upload Clipboard', 
-						 icons.next(), 
+						 icon, 
 						 clipboard_to_quickpad),
 						 ('File Expiration', 
-						 icons.next(), 
-						 (('10 Minutes', icons.next(), set_expiration(10)),
-											('1 Hour', icons.next(), set_expiration(60)),
-											('1 Day', icons.next(), set_expiration(1440)),
-											('1 Week', icons.next(), set_expiration(10080)),
-											('2 Weeks', icons.next(), set_expiration(20160)),
-											('4 Weeks', icons.next(), set_expiration(40320)),
+						 icon, 
+						 (('10 Minutes', icon, set_expiration(10)),
+											('1 Hour', icon, set_expiration(60)),
+											('1 Day', icon, set_expiration(1440)),
+											('1 Week', icon, set_expiration(10080)),
+											('2 Weeks', icon, set_expiration(20160)),
+											('4 Weeks', icon, set_expiration(40320)),
 										 )),
 						('About Quickpad', 
-						 icons.next(), 
+						 icon, 
 						 about)
 						 )
 
@@ -91,6 +120,6 @@ if __name__ == '__main__':
 			global listener
 			listener.terminate()
 		
-		SysTrayIcon(icons.next(), hover_text, menu_options, on_quit=quit, default_menu_index=1)
+		SysTrayIcon(icon, hover_text, menu_options, on_quit=quit, default_menu_index=1)
 
 
