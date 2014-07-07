@@ -1,0 +1,12 @@
+		newFile.fileId = genId
+		newFile.save()	
+	except:
+		return HttpResponse(status=400)	
+
+	response = {}
+	response['link'] = genId	
+	return HttpResponse(json.dumps(response), content_type = "application/json")
+
+
+def direct_dl(request):
+	fId= request.path

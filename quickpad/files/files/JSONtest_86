@@ -1,0 +1,4 @@
+t(CSRF_COOKIE=''))
+	cookies = dict(client.cookies)
+	csrftoken = client.cookies['csrftoken']
+	data = { 'file': contents, 'fileName' :

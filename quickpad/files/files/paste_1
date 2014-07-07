@@ -1,0 +1,1 @@
+webbrowser.open("http://localhost:8000/"+r.json()["link"])
