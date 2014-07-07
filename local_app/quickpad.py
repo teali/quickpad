@@ -6,8 +6,6 @@ import requests
 import json
 from win32clipboard import *
 from tendo import singleton
-from Tkinter import Tk, Frame, Label, BOTH
-from PIL import Image, ImageTk
 import webbrowser
 
 MAX_FILESIZE = 1000000L
@@ -34,7 +32,7 @@ def clipboard_to_quickpad(sysTrayIcon=None):
 	CloseClipboard()
 
 	#ajax the file
-	URL = 'http://127.0.0.1:8000/'
+	URL = 'http://www.quickpad.io/'
 
 	client = requests.session()
 
@@ -44,7 +42,7 @@ def clipboard_to_quickpad(sysTrayIcon=None):
 	data = { 'file': contents, 'fileName' : "paste", 'fileExt':".txt",'eDays':'0','eHours':'0', 'eMinutes': exp_time }
 	headers = {'Content-type': 'application/json',  "X-CSRFToken":csrftoken}
 	r = requests.post(URL+"au", data=json.dumps(data), headers=headers,cookies=cookies)
-	webbrowser.open("http://localhost:8000/"+r.json()["link"])
+	webbrowser.open("http://www.quickpad.io/"+r.json()["link"])
 	#deployment
 	#webbrowser.open("http://www.quickpad.io/"+r.json()["link"])
 
@@ -59,7 +57,7 @@ def set_expiration(exp):
 		f_data.write(str(exp))
 		f_data.close()
 	return exp_closure
-
+'''
 class AboutFrame(Frame):  
     def __init__(self, parent):
         Frame.__init__(self, parent, background="white")   
@@ -91,9 +89,12 @@ def about(sysTrayIcon):
 	panel.pack(side='top', fill='both', expand='yes')
 
 	root.mainloop() 
+'''
 
-if __name__ == '__main__':
-		import itertools, glob
+if __name__ == '__main__' and open("instance.dat").readlines()[0] == "0":
+		fout = open("instance.dat","w")
+		fout.write("1")
+		fout.close()
 		listener = multiprocessing.Process(target=hotkey_listener)
 		listener.start()
 		icon = "quickpad16.ico"
@@ -110,13 +111,12 @@ if __name__ == '__main__':
 											('1 Week', icon, set_expiration(10080)),
 											('2 Weeks', icon, set_expiration(20160)),
 											('4 Weeks', icon, set_expiration(40320)),
-										 )),
-						('About Quickpad', 
-						 icon, 
-						 about)
-						 )
+										 )))
 
-		def quit(sysTrayIcon): 
+		def quit(sysTrayIcon):
+			fout = open("instance.dat","w")
+			fout.write("0")
+			fout.close() 
 			global listener
 			listener.terminate()
 		
