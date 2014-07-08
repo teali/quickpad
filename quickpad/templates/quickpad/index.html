@@ -4,10 +4,13 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/style.css">
 		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/sidebar.css">
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}quickpad/aceEditor.css">
 
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 		<script src= "{{ STATIC_URL }}quickpad/script.js"></script>
 		<script src= "{{ STATIC_URL }}quickpad/sidebar.js"></script>
+		<script src= "{{ STATIC_URL }}quickpad/aceEditorwDrag.js"></script>
+		<script src= "{{ STATIC_URL }}quickpad/src-noconflict/ace.js"></script>
 		
 	</head>
 
@@ -17,16 +20,18 @@
 			<div class="menu"> QuickPad.io </div>
 			
 			<div class="tabs">
-				<div class="tab">
-					<div class="text">Hello-World.py</div>
-					<div class="accent"></div>
+				<div class="newTab"><input id="addbutton" type="image" src="{{ STATIC_URL }}quickpad/New_Tab_Icon.png"></div>
+				
+				<div class="tab-container">
+					<ul class="tab-links">
+					</ul>
 				</div>
 				
-				<div class="tab">
-					<div class="text">I-really-hate-coding.java</div>
+				<div class="tab-content">
+					<div id="editor"></div>
 				</div>	
 				
-				<div class="newTab"><input type="image" src="{{ STATIC_URL }}quickpad/New_Tab_Icon.png"></div>
+				
 			</div>
 			
 			<div class="icons">
