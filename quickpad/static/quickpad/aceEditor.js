@@ -88,7 +88,7 @@ $(document).ready(function() {
         var ultabs=tabs.find('ul');
 
         var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
-        var newtablinks=$('<li><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a><img class="closeButton" src="{{ STATIC_URL }}quickpad/del.png"></img><div></div></li>');
+        var newtablinks=$('<li><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a><img class="closeButton" src="/static/quickpad/del.png"></img><div></div></li>');
 
         ultabs.append(newtablinks);
 
@@ -146,7 +146,7 @@ $(document).ready(function() {
     var size=0;
     var leftval=[];
     var startval=25;
-    var leftinterval=173;
+    var leftinterval=170;
 
     $(".tab-links > li").each(function(i){
         if(i==0){

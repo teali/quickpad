@@ -51,6 +51,9 @@ div.newTab>input{
 	height:50%;
 
 }	
+.newTab{
+	left:-100px;
+}
 
 
 .menu{
