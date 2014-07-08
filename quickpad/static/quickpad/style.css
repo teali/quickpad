@@ -40,9 +40,6 @@ div.icons>input{
 
 }
 
-.newTab{
-	margin: 0 16px 0 16px;
-}
 
 div.tabs>div{
 	float:left;
@@ -58,7 +55,7 @@ div.newTab>input{
 
 .menu{
 	padding-top:5px;
-	margin:0 144px 0 16px;
+	margin:0 50px 0 16px;
 	float:left;
 	display:block;
 	width:auto;

@@ -1,0 +1,102 @@
+
+.tab-links:after {
+	display:block;
+	clear:both;
+	content:'';
+}
+
+.tab-links li {
+	margin:0px 5px;
+	float:left;
+	list-style:none;
+	display:inline-block;
+	position:absolute;
+}
+.header{
+	position:fixed;
+	top:0;
+	left:0;
+	width:auto;
+	height:48px;
+	background-color:#17415F;
+	z-index:10;
+	cursor: default;
+	-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;' 
+	 unselectable='on'
+	 onselectstart='return false;' 
+	 onmousedown='return false;
+}
+.tab-links a {
+	padding:7px 10px;
+	padding-right: 4px;
+	padding-bottom: 6px;
+	margin:1px;
+	display:inline-block;
+	border-radius:3px 3px 0px 0px;
+	background:#2E546F;
+	font-size:14px;
+	font-weight:600;
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	color:white;
+	transition:all linear 0.2s;
+	text-decoration:none;
+	z-index: -1;
+}
+
+.tab-links a:hover {
+	background:#a7cce5;
+	text-decoration:none;
+	cursor: default;
+}
+
+li.active a{
+	background:#2E546F;
+	color:white;
+}
+
+.tab {
+	display:none;
+}
+.tab.active {
+
+	display:block;
+}
+
+.select{
+	position:inherit;
+	width:100%;
+	height:4px;
+	background-color:#0c3350;
+	z-index:1;
+}
+
+body{
+	background-color:#2E546F;
+}
+
+#editor {
+	position:relative;
+	padding:350px;
+	padding-right:385px;
+	padding-bottom:240px;
+	border-radius:5px;
+}
+.tab-content{
+	position:relative;
+	left:25px;
+	top:15px;
+}
+
+.closeButton {
+	position:inherit;
+	width:20px;
+	height:20px;
+	background-color:#17415F;
+
+}
+.tab-container{
+	width:680px;
+	height:48px;
+	overflow-y:hidden;
+	overflow: auto;
+}

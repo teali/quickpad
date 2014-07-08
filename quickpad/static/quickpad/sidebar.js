@@ -9,7 +9,8 @@ $(function(){
     		$(".shortcuts").fadeIn().css("display","block");
 		});
 		
-    	
+		$(".tab-content").animate({left:-155},"fast");
+		$("#editor").animate({'padding-right':565.5},"fast");
     });
 
     $(".expand").on('click',function(e){
@@ -19,6 +20,8 @@ $(function(){
 		$(".sidebar").animate({left:"0em"},"fast","linear",function(){
 			$(".collapse").css("display","block");
 		});
+		$(".tab-content").animate({left:25},"fast");
+		$("#editor").animate({'padding-right':385},"fast");
 		
 		
 		
