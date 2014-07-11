@@ -11,7 +11,7 @@
 	height:100%;
 	width:13em;
 	background-color:#EAEAEA;
-	z-index:0;
+	z-index:1;
 	
 }
 
@@ -66,12 +66,21 @@ select:focus{
 }
 .collapse{
 	float:right;
-	margin-right:-2em;
+	position:absolute;
+	margin-left:13em;
+	top:100%;
+	margin-top:-6.5em;
+	z-index:1;
 }
 .expand{
 	float:right;
-	margin-right:-5em;
+	position:absolute;
+	margin-left:13em;
+	top:100%;
+	margin-top:-6.5em;
+	z-index:1;
 	display:none;
+
 }
 .shortcuts{
 	width:2em;

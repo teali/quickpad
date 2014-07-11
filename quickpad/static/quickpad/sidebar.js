@@ -14,8 +14,8 @@ $(function(){
 		var leftmove = "-=" + contentleft;
 		var acewidth = "+=" + widthdiff
 		
-		$(".tab-content").animate({left:leftmove},"fast");
-		$("#editor").animate({"padding-right":acewidth},"fast");
+		$(".tab-content").animate({"left":"-11em"},"fast");
+		//$("#editor").animate({"padding-right":acewidth},"fast");
 
     });
 
@@ -30,8 +30,8 @@ $(function(){
 		var leftmove = "+=" + contentleft;
 		var acewidth = "-=" + widthdiff
     	
-		$(".tab-content").animate({left:leftmove},"fast");
-		$("#editor").animate({"padding-right":acewidth},"fast");
+		$(".tab-content").animate({left:"0em"},"fast");
+		//$("#editor").animate({"padding-right":acewidth},"fast");
 
     });
 

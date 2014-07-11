@@ -1,0 +1,12 @@
+main.setLocation(point.x-initX,point.y-initY);
+			}
+			@Override
+			public void mouseMoved(MouseEvent arg0) {}			
+		});
+		BufferedImage img;
+		try {
+			img = ImageIO.read(new File(System.getProperty("user.dir")
+					+ "\\src\\main\\java\\com\\tieroneoss\\Images\\DesktopIcon.png"));
+			ImageIcon icon = new ImageIcon(img);
+			setIconImage(icon.getImage());
+			img.flush();

@@ -77,14 +77,16 @@ body{
 #editor {
 	position:relative;
 	padding:0px;
-	padding-right:735px;
-	padding-bottom:590px;
-	border-radius:5px;
+	padding-right:0px;
+	padding-bottom:0px;
+	width:auto;
 }
 .tab-content{
+	margin:0;
+	margin-left:-0.23em;
 	position:relative;
-	left:40px;
-	top:15px;
+	width:auto;
+	z-index:-1;
 }
 
 .closeButton {
