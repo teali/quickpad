@@ -76,14 +76,14 @@ body{
 
 #editor {
 	position:relative;
-	padding:350px;
-	padding-right:385px;
-	padding-bottom:240px;
+	padding:0px;
+	padding-right:735px;
+	padding-bottom:590px;
 	border-radius:5px;
 }
 .tab-content{
 	position:relative;
-	left:25px;
+	left:40px;
 	top:15px;
 }
 
@@ -95,7 +95,6 @@ body{
 
 }
 .tab-container{
-	width:680px;
 	height:48px;
 	overflow-y:hidden;
 	overflow: auto;

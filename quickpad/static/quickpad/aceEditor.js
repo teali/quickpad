@@ -1,8 +1,9 @@
 function pxInt(a){
     return parseInt(a,10);
 };
-function pxEm(a){
-    return a / parseFloat($("body").css("font-size"));
+function pxEm(a,b){
+    b = typeof b !== 'undefined' ? b : 'body';
+    return a / parseFloat($(b).css("font-size"));
 }
 
 function em(length){
@@ -142,6 +143,48 @@ $(document).ready(function() {
         editor.getSession.setMode("ace/mode/"+lang);
 
     };
+    var extrawidth=50;
+    var extraheight=40;
+
+    function resize(e){
+        var containerwidth= $(".icons").offset().left - $(".header").width();
+        var acewidth;
+        if($(".sidebar").hasClass("expanded")==true){
+            acewidth= $(window).width() - $(".collapse").offset().left - $('.collapse').width()-extrawidth;
+        }
+        else if($(".sidebar").hasClass("collapsed")==true){
+            acewidth= $(window).width() - $(".expand").offset().left - $('.expand').width()-extrawidth;
+        }
+        var aceheight=$(window).height() - $(".header").height() - extraheight;
+        console.log(containerwidth);
+        $(".tab-container").css({width:containerwidth});
+        $("#editor").css({
+            "padding-right":acewidth,
+            "padding-bottom":aceheight
+        });
+    }
+
+    resize();
+
+
+    $(window).on("resize",function(e){
+        var containerwidth= $(".icons").offset().left - $(".header").width();
+        var acewidth;
+        if($(".sidebar").hasClass("expanded")==true){
+            acewidth= $(window).width() - $(".collapse").offset().left - $('.collapse').width()-extrawidth;
+        }
+        else if($(".sidebar").hasClass("collapsed")==true){
+            acewidth= $(window).width() - $(".expand").offset().left - $('.expand').width()-extrawidth;
+        }
+        var aceheight=$(window).height() - $(".header").height() -extraheight;
+        console.log(containerwidth);
+        $(".tab-container").css({width:containerwidth});
+        $("#editor").css({
+            "padding-right":acewidth,
+            "padding-bottom":aceheight
+        });
+    });
+    
 
     var size=0;
     var leftval=[];
