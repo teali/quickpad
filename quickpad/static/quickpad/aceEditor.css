@@ -79,13 +79,12 @@ body{
 	padding:0px;
 	padding-right:0px;
 	padding-bottom:0px;
-	width:auto;
+
 }
 .tab-content{
 	margin:0;
 	margin-left:-0.23em;
 	position:relative;
-	width:auto;
 	z-index:-1;
 }
 

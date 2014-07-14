@@ -144,8 +144,8 @@ $(document).ready(function() {
         editor.getSession.setMode("ace/mode/"+lang);
 
     };
-    var extrawidth=50;
-    var extraheight=40;
+    var extrawidth=17;
+    var extraheight=0;
 
     function resize(e){
         var containerwidth= $(".icons").offset().left - $(".header").width();

@@ -3,6 +3,9 @@ $(function(){
 
 	var widthdiff=11*parseInt($("body").css("font-size"),10);
 	console.log("body"+widthdiff)
+	//pos();
+	
+
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
 		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){
@@ -14,7 +17,7 @@ $(function(){
 		var leftmove = "-=" + contentleft;
 		var acewidth = "+=" + widthdiff
 		
-		$(".tab-content").animate({"left":"-11em"},"fast");
+		$(".tab-content").animate({"left":"-11em","width":"+=11em"},"fast");
 		//$("#editor").animate({"padding-right":acewidth},"fast");
 
     });
@@ -30,9 +33,16 @@ $(function(){
 		var leftmove = "+=" + contentleft;
 		var acewidth = "-=" + widthdiff
     	
-		$(".tab-content").animate({left:"0em"},"fast");
+		$(".tab-content").animate({left:"0em","width":"-=11em"},"fast");
 		//$("#editor").animate({"padding-right":acewidth},"fast");
 
     });
 
 });
+
+function pos(){
+	console.log($(window).innerWidth());
+	console.log($(".sidebar").outerWidth()+40);
+	$(".content").width($(window).width()-$(".sidebar").width());
+	$(".content").height($(window).height()-$(".header").height());
+}
