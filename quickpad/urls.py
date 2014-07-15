@@ -13,6 +13,8 @@ urlpatterns = patterns('',
 	url(r'^$|^\w{8}$', views.main),
 	url(r'^au', views.upload),
 	url(r'^d/[\da-zA-z]+',views.direct_dl),
+    url(r'^getrecent$',views.get_recent),
+    url(r'^addrecent$',views.append_recent),
     url(r'^admin/', include(admin.site.urls)),
 	#url(r'^acc/signup', views.upload),
 )

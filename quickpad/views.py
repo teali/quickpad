@@ -17,6 +17,7 @@ from random import randint
 import json
 
 alphaNum = ''.join([chr(i) for i in range(48,58)+range(65,91)+range(97,123)])
+recent_limit = 10
 
 def main(request):
 	request.session.set_test_cookie()
@@ -83,6 +84,9 @@ def my_cookie(request):
 			request.session['font'] = 'consolas'
 			request.session['fontSize'] = '12'
 			request.session['style'] = ''
+
+			request.session['recent'] = []
+			request.session['cur_recent'] = 0
 		
 		for i in ['wId','tabs','active','font','fontSize','style']:	response[i] = request.session[i]	
 	else: response['cs'] = '0'		
@@ -108,10 +112,25 @@ def change_settings(request):
 		return HttpResponse(status=400)	
 	return HttpResponse('')
 
-
-
+def get_recent(request):
+	response = []
+	try:
+		response = request.session['recent']
+	except:
+		return HttpResponse(status=400)
+	return HttpResponse(json.dumps(response), content_type = "application/json")
 	
-	
+def append_recent(request):
+	try:
+		data=json.loads(request.body)
+		if len(request.session['recent']) == recent_limit:			
+			request.session['recent'][request.session['cur_recent']] = data['link']
+		else:
+			request.session['recent'].append(data['link'])
+		request.session['cur_recent'] = (request.session['cur_recent'] + 1)%recent_limit
+	except:
+		return HttpResponse(status=400)
+	return HttpResponse('')
 	
 	
 	
