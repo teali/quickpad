@@ -1,8 +1,0 @@
-time = fin.read().strip("\n")
-		fin.close()
-		contents = ""
-		#gets file from clipboard(file or copied text)
-		OpenClipboard()
-		if IsClipboardFormatAvailable(CF_HDROP) != 0 and len(GetClipboardData(CF_HDROP)) == 1 and os.path.getsize(GetClipboardData(CF_HDROP)[0]) < MAX_FILESIZE:			
-			contents = open(GetClipboardData(CF_HDROP)[0]).read()		
-		#fix string size(not len())

@@ -1,8 +1,0 @@
-
-	client.get(URL,cookies=dict(CSRF_COOKIE=''))
-	cookies = dict(client.cookies)
-	csrftoken = client.cookies['csrftoken']
-	data = { 'file': contents, 'fileName' : "JSONtest", 'fileExt':".py",'eDays':'0','eHours':'0', 'eMinutes': exp_time }
-	headers = {'Content-type': 'application/json',  "X-CSRFToken":csrftoken}
-	r = requests.post(URL+"au", data=json.dumps(data), headers=headers,cookies=cookies)
-	print r.json()
