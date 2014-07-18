@@ -11,7 +11,7 @@
 	height:100%;
 	width:13em;
 	background-color:#EAEAEA;
-	z-index:1;
+	z-index:0;
 	
 }
 
@@ -87,4 +87,26 @@ select:focus{
 	display:none;
 	margin-right:0.5em;
 	float:right;
+}
+div.url_tab>p{
+	font-size:0.85em;
+	display:inline;
+	color:#252525;
+}
+
+.urltab{
+	position:absolute;
+	bottom:7em;
+	
+}
+.recents{
+	padding-top:1em;
+	font-size:0.85em;
+	margin-bottom:2em;
+	margin-top:2em;
+	margin-left:-1em;
+	border-top-style:solid;
+	border-top-width:1px;
+	border-top-color:#A9A9A9;
+	cursor:pointer;
 }

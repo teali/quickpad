@@ -1,7 +1,7 @@
 $(function(){
 	
-	var input = "{Folder,folder,0,closed} {file.py,file,0,closed}";
-	load(input,".container");
+	var input = "{website.html,file,0,closed} {file.py,file,0,closed}";
+	load("{Recent,folder,0,closed}",".container");
 
 
 	$(".container").on('click','.folder',function(e){
@@ -21,7 +21,11 @@ $(function(){
 			$(this).toggleClass("opened");
 		}		
 	});	
-	
+
+	$(".container").on('click','.file',function(e){
+		e.stopPropagation();
+		alert($(this).attr("class"));	
+	});		
 });
 
 	function parse(input){
@@ -48,6 +52,6 @@ $(function(){
 	}
 	
 	function getData(id){
-		return "{Folder,folder,0,tester} {file.py,folder,0,tester}";
+		return "{website.html,file,0,closed} {file.py,file,0,closed}";
 	}
 	
