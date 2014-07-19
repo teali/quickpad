@@ -253,6 +253,7 @@ $(document).ready(function() {
         var leftMouse=leftval[index] +pxInt($("div.tabs").css("left")) - e.pageX+5 ;//not debugging
         console.log(e.pageX+"epagex");
         console.log(leftMouse+"leftmoose");
+
         $(document).on("mousemove",document,function(e){
 
             var currleft=pxInt($("li.drag").css("left"));
@@ -309,6 +310,7 @@ $(document).ready(function() {
                     //also change order or elements in DOM
                 }
             }
+            console.log("new-------------------------");
             console.log(e.pageX+"second epagex");
             var moveX=e.pageX+leftMouse;
             console.log(moveX+"movex");
@@ -316,40 +318,61 @@ $(document).ready(function() {
            
             console.log("limitval"+limit);
             var leftlim=17;
-            var rightlim=$("div.tab-container").width()+$(".icons input").width()-$("div.menu").width();
+            var rightlim=$("div.tab-container").width()+$(".icons input").width()/2.0-$("div.menu").width();
             console.log(rightlim);
+            var extramove;
+            var pre,post;
 
             if(limit>leftlim && limit<rightlim){
                 $("li.drag").offset({left:moveX});
                 lastmoveX=moveX;
+                console.log("before"+limit);
                 limit=pxInt($("li.drag").css("left"));
+                console.log("after"+limit);
                 console.log(1);
-                console.log(limit)
+                console.log(limit+"goodarea limit");
             }
             else if(limit<=leftlim){
-                var unstuck=leftlim+1;
-                $("li.drag").stop().animate({left:leftlim},200);
+
+                $("li.drag").stop().animate({
+                    left:leftlim
+                },{
+                    duration:200,
+                start: function(){
+                    pre=pxInt($("li.drag").css("left"));
+                    console.log(pre+"pre");
+                }});
+                
                 
                 if(lastmoveX<=moveX){
-                    limit=pxInt($("li.drag").css("left"));
-                    limit++;
-                    $("li.drag").offset({left:moveX});
+                    console.log("lo"+pre);
+                    extramove=leftlim-pre;
+                    limit=leftlim+1;
+                    $("li.drag").stop().offset({left:(moveX)});
                     console.log(3);
-                    console.log(limit);
+                    console.log(limit+"leftlim limit");
                 }
                 console.log(2);
             }
             else if(limit>=rightlim){
-                var unstuck=rightlim-1;
-                $("li.drag").stop().animate({left:rightlim},200);
-                
-                if(lastmoveX>moveX){
-                    limit=pxInt($("li.drag").css("left"));
-                    limit--;
-                    $("li.drag").offset({left:moveX});
+                $("li.drag").stop().animate({
+                    left:rightlim
+                },{
+                    duration:200,
+                start: function(){
+                    pre=pxInt($("li.drag").css("left"));
+                    console.log("pre"+pre);
+                }});
+
+                if(lastmoveX>=moveX){
+                    extramove=rightlim-pre;
+                    limit=rightlim-1;
+                    $("li.drag").stop().offset({left:(moveX)});
+                    console.log(4);
+                    console.log(limit+"rightlim limit");
                 }
             }
-            console.log(lastmoveX);
+            console.log(lastmoveX+"lastmoveX");
             e.preventDefault();
         });
         e.preventDefault();
