@@ -319,6 +319,7 @@ $(document).ready(function() {
             console.log("limitval"+limit);
             var leftlim=17;
             var rightlim=$("div.tab-container").width()+$(".icons input").width()/2.0-$("div.menu").width();
+            // var rightlim=$("div.icons").offset().left - $("div.header").width();
             console.log(rightlim);
             var extramove;
             var pre,post;
@@ -347,8 +348,9 @@ $(document).ready(function() {
                 if(lastmoveX<=moveX){
                     console.log("lo"+pre);
                     extramove=leftlim-pre;
+                    console.log("extra"+extramove)
                     limit=leftlim+1;
-                    $("li.drag").stop().offset({left:(moveX)});
+                    $("li.drag").stop().offset({left:(moveX+extramove)});
                     console.log(3);
                     console.log(limit+"leftlim limit");
                 }
@@ -365,7 +367,8 @@ $(document).ready(function() {
                 }});
 
                 if(lastmoveX>=moveX){
-                    extramove=rightlim-pre;
+                    extramove=pre-rightlim;
+                    console.log(extramove);
                     limit=rightlim-1;
                     $("li.drag").stop().offset({left:(moveX)});
                     console.log(4);
