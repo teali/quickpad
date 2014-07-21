@@ -35,8 +35,8 @@
 div.icons>input{
 	margin: 14px 4px;
 	float:right;
-	width:25%;
-	height:25%;
+	width:1.54em;
+	height:1.54em;
 
 }
 
@@ -85,7 +85,7 @@ div.newTab>input{
 	height:auto;
 	width:auto;
 	overflow:scroll;
-	background-color:ededed;
+	background-color:#ededed;
 
 	
 }

@@ -33,7 +33,7 @@ $(document).ready(function() {
     var alldocs = [];
     var count=0;
 
-    $('.newTab').on('click', function(e){
+    $('#addbutton').on('click', function(e){
         newTab(e);
     });
 
@@ -41,8 +41,7 @@ $(document).ready(function() {
 
         console.log(this);
 
-        $(this).parent('li').addClass('active').siblings().removeClass('active').children('div').removeClass('select');
-        $(this).siblings('div').addClass('select');
+        $(this).parent('li').addClass('active').siblings().removeClass('active');
         
         e.preventDefault();
 
@@ -57,12 +56,13 @@ $(document).ready(function() {
         console.log(currindex);
         var sizeli=$('.tab-links li').length;
         console.log(size);
+        console.log(leftval+"!");
 
         if(sizeli==1){
             var nullsesh=new Session("");
             editor.setSession(nullsesh);
         }
-        else if($(this).siblings('div').hasClass('select')){
+        else if($(this).parent('li').hasClass('active')){
             var successorElement;
             if(currindex==sizeli-1){
                 successorElement=$(this).parent('li').prev();
@@ -72,25 +72,37 @@ $(document).ready(function() {
                 successorElement=$(this).parent('li').next();
             }
             successorElementID=successorElement.children('a').attr('id');
-            successorElement.addClass('active').siblings().removeClass('active').children('div').removeClass('select');
-            successorElement.children('div').addClass('select');
+            successorElement.addClass('active').siblings().removeClass('active')
             console.log(successorElementID);
             var nextSession=allseshs[successorElementID];
             editor.setSession(nextSession);
 
         }
         $(this).parent('li').remove();
+        count--;
+        leftval.splice(count,1);
+        console.log(leftval+"2");
+
+        for(var i=currindex;i<count;i++){
+            $(".tab-links li").eq(i).stop().animate({
+                left: leftval[i]
+            },{
+                duration: 200
+            });
+        }
+
         e.preventDefault();
     });
 
     var newTab = function(e){
+        console.log("newtableft"+leftval);
         console.log("count:"+count);
 
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
 
         var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
-        var newtablinks=$('<li><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a><img class="closeButton" src="/static/quickpad/del.png"></img><div></div></li>');
+        var newtablinks=$('<li><img class="closeButton" src="/static/quickpad/del.png"></img><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a></li>');
 
         ultabs.append(newtablinks);
 
@@ -98,8 +110,7 @@ $(document).ready(function() {
 
         console.log("newtabfind:"+newtabfind);
 
-        newtabfind.parent('li').addClass('active').siblings().removeClass('active').children('div').removeClass('select');
-        newtabfind.siblings('div').addClass('select');
+        newtabfind.parent('li').addClass('active').siblings().removeClass('active');
 
         var contentdiv=tabs.find('div.tab-content');
 
@@ -190,7 +201,7 @@ $(document).ready(function() {
     var size=0;
     var leftval=[];
     var startval=25;
-    var leftinterval=170;
+    var leftinterval=162;
 
     $(".tab-links > li").each(function(i){
         if(i==0){
@@ -212,17 +223,21 @@ $(document).ready(function() {
     var prev,curr,next,index;
 
     $(document).on("mousedown","li > a.object",function(e){
+        var lastmoveX;
+
 
         console.log("down");
+        console.log("the list:"+leftval)
         $(this).parent("li").addClass("drag").css({"z-index":1});
 
         index=$(".drag").index();
         console.log(index); 
 
         var difference=0;
-
+        var limit=pxInt($("li.drag").css("left"));
         curr=leftval[index];
         console.log("this curr: "+curr);
+
 
         if(index+1<size){//all except last: has next 
             next=leftval[index+1];
@@ -235,9 +250,10 @@ $(document).ready(function() {
 
         console.log(difference+"diff");
 
-        var leftMouse=leftval[index] +pxInt($("div.tabs").css("left")) - e.pageX ;//not debugging
-        console.log(e.pageX);
-        console.log(leftMouse);
+        var leftMouse=leftval[index] +pxInt($("div.tabs").css("left")) - e.pageX+5 ;//not debugging
+        console.log(e.pageX+"epagex");
+        console.log(leftMouse+"leftmoose");
+
         $(document).on("mousemove",document,function(e){
 
             var currleft=pxInt($("li.drag").css("left"));
@@ -294,16 +310,74 @@ $(document).ready(function() {
                     //also change order or elements in DOM
                 }
             }
-
+            console.log("new-------------------------");
+            console.log(e.pageX+"second epagex");
             var moveX=e.pageX+leftMouse;
+            console.log(moveX+"movex");
 
-            $("li.drag").offset({left:moveX});
+           
+            console.log("limitval"+limit);
+            var leftlim=17;
+            var rightlim=$("div.tab-container").width()+$(".icons input").width()/2.0-$("div.menu").width();
+            console.log(rightlim);
+            var extramove;
+            var pre,post;
 
+            if(limit>leftlim && limit<rightlim){
+                $("li.drag").offset({left:moveX});
+                lastmoveX=moveX;
+                console.log("before"+limit);
+                limit=pxInt($("li.drag").css("left"));
+                console.log("after"+limit);
+                console.log(1);
+                console.log(limit+"goodarea limit");
+            }
+            else if(limit<=leftlim){
+
+                $("li.drag").stop().animate({
+                    left:leftlim
+                },{
+                    duration:200,
+                start: function(){
+                    pre=pxInt($("li.drag").css("left"));
+                    console.log(pre+"pre");
+                }});
+                
+                
+                if(lastmoveX<=moveX){
+                    console.log("lo"+pre);
+                    extramove=leftlim-pre;
+                    limit=leftlim+1;
+                    $("li.drag").stop().offset({left:(moveX)});
+                    console.log(3);
+                    console.log(limit+"leftlim limit");
+                }
+                console.log(2);
+            }
+            else if(limit>=rightlim){
+                $("li.drag").stop().animate({
+                    left:rightlim
+                },{
+                    duration:200,
+                start: function(){
+                    pre=pxInt($("li.drag").css("left"));
+                    console.log("pre"+pre);
+                }});
+
+                if(lastmoveX>=moveX){
+                    extramove=rightlim-pre;
+                    limit=rightlim-1;
+                    $("li.drag").stop().offset({left:(moveX)});
+                    console.log(4);
+                    console.log(limit+"rightlim limit");
+                }
+            }
+            console.log(lastmoveX+"lastmoveX");
             e.preventDefault();
         });
         e.preventDefault();
         
-    })
+    });
     $(document).on("mouseup",document,function(e){
 
         $(".drag").removeClass("drag");

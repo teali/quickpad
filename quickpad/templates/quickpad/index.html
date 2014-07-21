@@ -10,6 +10,7 @@
 		<script src= "{{ STATIC_URL }}quickpad/script.js"></script>
 		<script src= "{{ STATIC_URL }}quickpad/sidebar.js"></script>
 		<script src= "{{ STATIC_URL }}quickpad/aceEditor.js"></script>
+		<script src= "{{ STATIC_URL }}quickpad/sidebarFS.js"></script>
 		<script src= "{{ STATIC_URL }}quickpad/src-noconflict/ace.js"></script>
 		
 	</head>
@@ -37,7 +38,9 @@
 			<div class="icons">
 				<input type="image" src="{{ STATIC_URL }}quickpad/SettingsIcon.png" >
 				<input type="image" src="{{ STATIC_URL }}quickpad/DLicon.png" >
-				
+				<input type="image" src="{{ STATIC_URL }}quickpad/collapse.png">
+
+			
 			</div>
 			
 		</div>
@@ -48,12 +51,10 @@
 				<input type="image" src="{{ STATIC_URL }}quickpad/theme.png" >
 				<input type="image" src="{{ STATIC_URL }}quickpad/upload.png" >
 			</div>
-
 			<input type="image" class= "collapse" src="{{ STATIC_URL }}quickpad/collapse.png">
 			<input type="image" class= "expand" src ="{{ STATIC_URL }}quickpad/expand.png">
-			
-			<div class="settings">
 
+			<div class="settings">
 				<div class= "theme">
 					<p>Theme</p><br>
 					<select>
@@ -85,9 +86,17 @@
 				</div>
 
 			</div>
+
+	
+			<div class="recents"><div class="container"></div></div>
+			
+			<div class="urltab">
+				<p style="font-size:0.85em; display:inline; color:#252525;">Open in a new tab</p><br>
+				<input type="text" name = "url" style="width:14em;">
+			</div>
+			
+			
 		</div>
-		
-		
 		
 		
 		

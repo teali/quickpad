@@ -6,4 +6,4 @@ A development tool focused on collaboration and speed
 Release Date
 ============
 
-Mid July, 2014
+End of July, 2014
