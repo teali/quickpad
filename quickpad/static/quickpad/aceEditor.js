@@ -102,7 +102,7 @@ $(document).ready(function() {
         var ultabs=tabs.find('ul');
 
         var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
-        var newtablinks=$('<li><img class="closeButton" src="/static/quickpad/del.png"></img><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a></li>');
+        var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
 
         ultabs.append(newtablinks);
 

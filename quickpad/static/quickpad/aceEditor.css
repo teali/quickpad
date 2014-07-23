@@ -26,20 +26,22 @@
 	 onselectstart='return false;' 
 	 onmousedown='return false;
 }
+.tab{
+	background:#2E546F;
+	padding-right:18px;
+	margin-right:20px;
+}
 .tab-links a {
 	padding-top:7px;
-	padding-left: 14px;
+	padding-left: 4px;
 	padding-right: 4px;
 	padding-bottom: 6px;
-	margin:1px;
-	display:inline-block;
-	border-radius:3px 3px 0px 0px;
-	background:#2E546F;
+	display:inline-block;	
 	font-size:14px;
 	font-weight:600;
 	font-family:"Century Gothic", CenturyGothic,sans-serif;
 	color:white;
-	transition:all linear 0.2s;
+	/*transition:all linear 0.2s;*/
 	text-decoration:none;
 	z-index: -1;
 }
@@ -49,7 +51,7 @@
 	cursor: default;
 }
 
-li.active a{
+li.active{
 	background:#61798B;
 	color:white;
 }
@@ -73,14 +75,21 @@ body{
 }
 
 .closeButton {
-	position:inherit;
+	position:absolute;
+	cursor: pointer;
 	width:15px;
 	height:15px;
+	top:9px;
 }
 
 .newTab {
 	width:auto;
 	height:auto;
+}
+
+.newTab input{
+	outline: none;
+	cursor: pointer;
 }
 
 .tab-container{
