@@ -2,13 +2,12 @@ $(function(){
 
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
-		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){
-			$(".settings").fadeOut().css("display","none");
-			$(".recents").fadeOut().css("display","none");
-			$(".urltab").fadeOut().css("display","none");
-			$(".expand").css("display","block");
-    		$(".shortcuts").fadeIn().css("display","block");
-		}).toggleClass("collapsed").toggleClass("expanded");
+		$(".settings").fadeOut().css("display","none");
+		$(".recents").fadeOut().css("display","none");
+		$(".urltab").fadeOut().css("display","none");
+		$(".expand").css("display","block");
+    	$(".shortcuts").fadeIn().css("display","block");
+		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){}).toggleClass("collapsed").toggleClass("expanded");
 
 		var widthdiff=$(window).width() - $(".sidebar").width() + pxInt($(".sidebar").css("font-size"))*11-30;
 		

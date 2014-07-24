@@ -1,7 +1,7 @@
 $(function(){
 	
-	var input = "{website.html,file,0,closed} {file.py,file,0,closed}";
-	load("{Recent,folder,0,closed}",".container");
+
+	load("{Recent Files,folder,0,closed}",".container");
 
 
 	$(".container").on('click','.folder',function(e){
@@ -30,7 +30,7 @@ $(function(){
 
 	function parse(input){
 		var arr=[];
-		var data = input.split(" ");
+		var data = input.split(";");
 		
 		for (var i = 0; i<data.length; i++){
 			var tmp = data[i].split(",");
@@ -44,6 +44,9 @@ $(function(){
 		
 		var arr=parse(input);
 		for (var i = 0 ; i <arr.length ; i ++){
+			if (arr[i].type != "folder"){
+				$(parentId).append('<input type="image" class= "thumb" src="/static/quickpad/file.png">');
+			}
 			$(parentId).append('<div class=  '+ arr[i].type+ ' >'+
 										arr[i].name+'</div>');
 		}
@@ -52,6 +55,6 @@ $(function(){
 	}
 	
 	function getData(id){
-		return "{website.html,file,0,closed} {file.py,file,0,closed}";
+		return "{website.html,file,0,closed};{file.py,file,0,closed}";
 	}
 	
