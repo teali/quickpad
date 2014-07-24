@@ -62,16 +62,13 @@ body{
 
 #editor {
 	position:relative;
-	padding:0px;
-	padding-right:0px;
-	padding-bottom:0px;
-
 }
 .tab-content{
 	margin:0;
 	margin-left:-0.23em;
 	position:relative;
 	z-index:-1;
+	width:1000em;
 }
 
 .closeButton {

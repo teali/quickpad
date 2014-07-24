@@ -26,7 +26,7 @@ $(document).ready(function() {
 
     editor.setTheme("ace/theme/twilight");
     editor.getSession().setMode("ace/mode/javascript");
-    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setUseWrapMode(true);    
     editor.resize();  
 
     var allseshs = [];
@@ -102,7 +102,7 @@ $(document).ready(function() {
         var ultabs=tabs.find('ul');
 
         var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
-        var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object">'+ tabnum+' Tab</a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
+        var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object">'+ tabnum+'</a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
 
         ultabs.append(newtablinks);
 
@@ -111,8 +111,6 @@ $(document).ready(function() {
         console.log("newtabfind:"+newtabfind);
 
         newtabfind.parent('li').addClass('active').siblings().removeClass('active');
-
-        var contentdiv=tabs.find('div.tab-content');
 
         doc = new Document("newnew123 "+tabnum);
 
@@ -155,53 +153,34 @@ $(document).ready(function() {
         editor.getSession.setMode("ace/mode/"+lang);
 
     };
-    var extrawidth=17;
+    var extrawidth=30;
     var extraheight=0;
 
     function resize(e){
         var containerwidth= $(".icons").offset().left - $(".header").width();
-        var acewidth;
-        if($(".sidebar").hasClass("expanded")==true){
-            acewidth= $(window).width() - $(".collapse").offset().left - $('.collapse').width()-extrawidth;
-        }
-        else if($(".sidebar").hasClass("collapsed")==true){
-            acewidth= $(window).width() - $(".expand").offset().left - $('.expand').width()-extrawidth;
-        }
+        console.log(pxInt($("div.sidebar").css("left")));
+        console.log($(window).width()+"wind");
+        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-extrawidth;
         var aceheight=$(window).height() - $(".header").height() - extraheight;
         console.log(containerwidth);
         $(".tab-container").css({width:containerwidth});
         $("#editor").css({
-            "padding-right":acewidth,
-            "padding-bottom":aceheight
+            "width":acewidth,
+            "height":aceheight
         });
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);    
     }
 
-    resize();
-
-
     $(window).on("resize",function(e){
-        var containerwidth= $(".icons").offset().left - $(".header").width();
-        var acewidth;
-        if($(".sidebar").hasClass("expanded")==true){
-            acewidth= $(window).width() - $(".collapse").offset().left - $('.collapse').width()-extrawidth;
-        }
-        else if($(".sidebar").hasClass("collapsed")==true){
-            acewidth= $(window).width() - $(".expand").offset().left - $('.expand').width()-extrawidth;
-        }
-        var aceheight=$(window).height() - $(".header").height() -extraheight;
-        console.log(containerwidth);
-        $(".tab-container").css({width:containerwidth});
-        $("#editor").css({
-            "padding-right":acewidth,
-            "padding-bottom":aceheight
-        });
+        resize();    
     });
-    
+    resize(); 
 
     var size=0;
     var leftval=[];
     var startval=25;
-    var leftinterval=162;
+    var leftinterval=140;
 
     $(".tab-links > li").each(function(i){
         if(i==0){
@@ -318,7 +297,7 @@ $(document).ready(function() {
            
             console.log("limitval"+limit);
             var leftlim=17;
-            var rightlim=$("div.tab-container").width()+$(".icons input").width()/2.0-$("div.menu").width();
+            var rightlim=$("div.tab-container").width()+1.5*$(".icons input").width()-$("div.menu").width();
             // var rightlim=$("div.icons").offset().left - $("div.header").width();
             console.log(rightlim);
             var extramove;

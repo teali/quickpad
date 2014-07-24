@@ -1,10 +1,4 @@
 $(function(){ 
-	var contentleft = $(".collapse").offset().left - $(".expand").offset().left - $(".collapse").width() +13;
-
-	var widthdiff=11*parseInt($("body").css("font-size"),10);
-	console.log("body"+widthdiff)
-	//pos();
-	
 
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
@@ -16,11 +10,10 @@ $(function(){
     		$(".shortcuts").fadeIn().css("display","block");
 		}).toggleClass("collapsed").toggleClass("expanded");
 
-		var leftmove = "-=" + contentleft;
-		var acewidth = "+=" + widthdiff
+		var widthdiff=$(window).width() - $(".sidebar").width() + pxInt($(".sidebar").css("font-size"))*11-30;
 		
 		$(".tab-content").animate({"left":"-11em","width":"+=11em"},"fast");
-		//$("#editor").animate({"padding-right":acewidth},"fast");
+		$("#editor").animate({width:widthdiff},"fast");
 
     });
 
@@ -33,12 +26,11 @@ $(function(){
 		$(".sidebar").animate({left:"0em"},"fast","linear",function(){
 			$(".collapse").css("display","block");
 		}).toggleClass("expanded").toggleClass("collapsed");
-
-		var leftmove = "+=" + contentleft;
-		var acewidth = "-=" + widthdiff
+		
+		var widthdiff=$(window).width() -$(".sidebar").width()-30;
     	
 		$(".tab-content").animate({left:"0em","width":"-=11em"},"fast");
-		//$("#editor").animate({"padding-right":acewidth},"fast");
+		$("#editor").animate({width:widthdiff},"fast");
 
     });
 
