@@ -11,6 +11,7 @@ function em(length){
 }
 
 $(document).ready(function() {    
+    var testtxt="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n\nthis is space where you can code on the go"
 
 
     window.define= window.define || ace.define;
@@ -29,9 +30,20 @@ $(document).ready(function() {
     editor.getSession().setUseWrapMode(true);    
     editor.resize();  
 
+    var quicknum= new Date().getTime() + Math.floor(Math.random()*100000);
+    var qdoc = new Document(testtxt);
+    var qsession = new Session(qdoc);
+
     var allseshs = [];
     var alldocs = [];
-    var count=0;
+
+    allseshs[quicknum]=qsession;
+    alldocs[quicknum]=qdoc;
+    editor.setSession(qsession);
+    var qwidth= 9+6.0/7+"em";
+    $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
+
+    var count=1;
 
     $('#addbutton').on('click', function(e){
         newTab(e);
@@ -93,7 +105,7 @@ $(document).ready(function() {
 
         e.preventDefault();
     });
-
+//once upload function works make it so that it find the extension
     var newTab = function(e){
         console.log("newtableft"+leftval);
         console.log("count:"+count);
@@ -133,13 +145,15 @@ $(document).ready(function() {
             var value=startval;
         }
 
-        $(".tab-links li").eq(count).css({left:value});
+        $(".tab-links li").eq(count).css({left:value,width:"8em"});
         leftval[count]=value;
         console.log(leftval);
         size++;
         count++;
         console.log(count);
         //to here
+        console.log($(".tab-links li").width()+"tab width");
+        console.log($("li.tab").css("font-size")+"tab font-size");
         e.preventDefault();
 
     };
@@ -177,10 +191,10 @@ $(document).ready(function() {
     });
     resize(); 
 
-    var size=0;
-    var leftval=[];
+    var size=1;
+    var leftval=[startval];
     var startval=25;
-    var leftinterval=140;
+    var leftinterval=155;
 
     $(".tab-links > li").each(function(i){
         if(i==0){

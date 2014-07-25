@@ -25,11 +25,14 @@
 				
 				<div class="tab-container">
 					<ul class="tab-links">
+						<li class="tab active">
+							<a id="quickcode" class="object">QuickQode</a>
+						</li>
 					</ul>
 				</div>
 				
 				<div class="tab-content">
-					<div id="editor">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum."</div>
+					<div id="editor"></div>
 				</div>	
 				
 				
@@ -45,66 +48,54 @@
 			
 		</div>
 		
-		<div class="sidebar expanded unselectable">
-
-<!-- 			<div class="shortcuts unselectable">
+		<div class="sidebar expanded">
+			<div class="shortcuts">
 				<input type="image" src="{{ STATIC_URL }}quickpad/open.png" >
 				<input type="image" src="{{ STATIC_URL }}quickpad/theme.png" >
 				<input type="image" src="{{ STATIC_URL }}quickpad/upload.png" >
-			</div> -->
-
+			</div>
 			<input type="image" class= "collapse" src="{{ STATIC_URL }}quickpad/collapse.png">
 			<input type="image" class= "expand" src ="{{ STATIC_URL }}quickpad/expand.png">
 
-
-
-			<div class="settings unselectable">
-				<div class="side_header">Settings</div>
-				<div class= "theme unselectable">
+			<div class="settings">
+				<div class= "theme">
 					<p>Theme</p><br>
 					<select>
-						<option value="Alpha">Alpha</option>
-						<option value="Beta">Beta</option>
-						<option value="Zenburn">Zenburn</option>
-						<option value="TonySucks">TonySucks</option>
+						<option value="volvo">Alpha</option>
+						<option value="saab">Beta</option>
+						<option value="mercedes">Zenburn</option>
+						<option value="audi">TonySucks</option>
 					</select>
 				</div>
 
-				<div class= "size unselectable">	
+				<div class= "size">	
 					<p>Size</p><br>
 					<select>
-						<option value="8">8</option>
-						<option value="10">10</option>
-						<option value="12">12</option>
-						<option value="14">14</option>
+						<option value="volvo">8</option>
+						<option value="saab">10</option>
+						<option value="mercedes">12</option>
+						<option value="audi">14</option>
 					</select>
 				</div>
 
-				<div class= "font unselectable">
+				<div class= "font">
 					<p>Font</p><br>
 					<select>
-						<option value="Consolas">Consolas</option>
-						<option value="Times New ROman">Times New Roman</option>
-						<option value="Calibri">Calibri</option>
-						<option value="Comic Sans">Comic Sans</option>
+						<option value="volvo">Consolas</option>
+						<option value="saab">Times New Roman</option>
+						<option value="mercedes">Calibri</option>
+						<option value="audi">Comic Sans</option>
 					</select>
 				</div>
 
 			</div>
 
 	
-			<div class="recents unselectable">
-				<div class="side_header">Recent Files</div>
-				<div class="container unselectable"><input type="image" class="thumb" src="{{ STATIC_URL }}quickpad/folder.png" ></div>
-			</div>
+			<div class="recents"><div class="container"></div></div>
 			
-
-			<div class="urltab unselectable">
-				<div class="side_header">Open in New Tab</div>
+			<div class="urltab">
 				<p style="font-size:0.85em; display:inline; color:#252525;">Open in a new tab</p><br>
-				<input type="text" name = "url" style="width:14em; ">
-				<input type="submit" name = "submit" id = "submit" value="Enter">
-
+				<input type="text" name = "url" style="width:14em;">
 			</div>
 			
 			

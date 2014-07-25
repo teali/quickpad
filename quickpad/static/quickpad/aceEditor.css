@@ -74,6 +74,7 @@ body{
 .closeButton {
 	position:absolute;
 	cursor: pointer;
+	right:2px;
 	width:15px;
 	height:15px;
 	top:9px;
