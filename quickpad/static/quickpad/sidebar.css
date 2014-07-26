@@ -122,7 +122,7 @@ div.url_tab>p{
 	border-bottom-width:1px;
 	border-bottom-color:#A9A9A9;
 	cursor:pointer;
-	height:58%;
+	height:50%;
 	
 }
 .thumb{
@@ -141,5 +141,8 @@ div.url_tab>p{
     font-family:"Century Gothic", CenturyGothic,sans-serif;
     text-decoration: none;
     cursor: pointer;
-    
+
+}
+.actions{
+	margin-bottom:1em;
 }

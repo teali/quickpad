@@ -8,11 +8,15 @@ $(function(){
 		e.stopPropagation();
 		if ($(this).hasClass("opened")){
 			
-			if ( $(this).children("div").css("display") == "none"){
-				$(this).children("div").css("display","block");
+			if ( $(this).children("div").css("visibility") == "hidden"){
+				$(this).children("div").css("visibility","visible");
+
+				
 			}
 			else{
-				$(this).children("div").css("display","none");				
+				$(this).children("div").css("visibility","hidden");	
+
+				
 			}	
 		}
 		else{

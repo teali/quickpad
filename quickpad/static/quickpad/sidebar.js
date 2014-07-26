@@ -2,11 +2,11 @@ $(function(){
 
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
-		$(".settings").fadeOut().css("display","none");
-		$(".recents").fadeOut().css("display","none");
-		$(".urltab").fadeOut().css("display","none");
+		$(".settings").css("display","none");
+		$(".recents").css("opacity","0");
+		$(".urltab").css("display","none");
 		$(".expand").css("display","block");
-    	$(".shortcuts").fadeIn().css("display","block");
+    	$(".actions").css("display","none");
 		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){}).toggleClass("collapsed").toggleClass("expanded");
 
 		var widthdiff=$(window).width() - $(".sidebar").width() + pxInt($(".sidebar").css("font-size"))*11-30;
@@ -20,8 +20,9 @@ $(function(){
     	$(".shortcuts").fadeOut().css("display","none");
 		$(this).css("display","none");
 		$(".settings").css("display","block");
-		$(".recents").css("display","block");
+		$(".recents").css("opacity","1");
 		$(".urltab").css("display","block");
+		$(".actions").css("display","block");
 		$(".sidebar").animate({left:"0em"},"fast","linear",function(){
 			$(".collapse").css("display","block");
 		}).toggleClass("expanded").toggleClass("collapsed");
