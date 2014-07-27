@@ -35,7 +35,7 @@
 	padding-top:7px;
 	padding-left: 4px;
 	padding-right: 4px;
-	padding-bottom: 6px;
+	padding-bottom: 8px;
 	display:inline-block;	
 	font-size:14px;
 	font-weight:600;
@@ -51,6 +51,11 @@
 	cursor: default;
 }
 
+a.storedobj:hover {
+	text-decoration:none;
+	cursor: default;
+}
+
 li.active{
 	background:#61798B;
 	color:white;
@@ -62,6 +67,7 @@ body{
 
 #editor {
 	position:relative;
+	z-index:0;
 }
 .tab-content{
 	margin:0;
@@ -94,4 +100,34 @@ body{
 	height:48px;
 	overflow-y:hidden;
 	overflow: auto;
+}
+.tabstore{
+	border-style:none;
+	border-bottom-style:solid;
+	border-width:3px;
+	border-color:#A9A9A9;
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	position:fixed;
+	height:auto;
+	background-color:#2E546F;
+	z-index:1;
+	color:white;
+	
+}
+.tabstore ul{
+	list-style-type: none;
+}
+.storebutton{	
+	text-align:left;
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	font-weight: bold;
+	color:white;
+	background-color: #17415F;
+	border-style: none;
+	cursor:pointer;
+
+}
+
+.storebutton:focus{
+	outline:0;
 }

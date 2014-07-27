@@ -44,9 +44,77 @@ $(document).ready(function() {
     $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
 
     var count=1;
+    $(document).on("click",".tabstore li.storedtab",function(e){
+        var currid=$(this).children("a").attr("id");
+        var inId=$("ul.tab-links li:first > a").attr("id");
+        if(inId!=quicknum){
+            $("ul.tab-links li:first > img").remove();
+        }
+        $("ul.tab-links li:first").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
+        if(currid==quicknum){
+            $(this).appendTo("ul.tab-links").children("a").css({width:qwidth});
+        }
+        else{
+            var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+            $(this).append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
+        }
+            
+         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab active").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"}).siblings().removeClass("active");
+        for(var i=0;i<size;i++){
+            $(".tab-links li").eq(i).css({left:leftval[i]});
+        }
+    });
+    $(document).on("click",".storebutton",function(e){
+        console.log("here closed");
+
+        if($(".tabstore").hasClass("closed")){
+            $("div.tabstore").stop().animate({height:"+="+(1.1875*(count-tabnumlimit)+2)+"em"},{duration:"fast",
+                complete:function(){
+                    $("li.storedtab").fadeIn("fast");
+            }});
+            $("li.storedtab").fadeIn("fast");
+        }
+        else if($(".tabstore").hasClass("opened")){
+            $("li.storedtab").fadeOut("fast")
+            $("div.tabstore").stop().delay("fast").stop().animate({height:0},{duration:"fast"});
+        }
+        $("div.tabstore").toggleClass("closed").toggleClass("opened");
+    });
+
+var tabstoretop, tabstorewidth, tabstoreleft, tabstoreheight;
+var nexttabwidth=8*pxInt($("body").css("font-size"));
 
     $('#addbutton').on('click', function(e){
-        newTab(e);
+        console.log($(".tabstore").length+"tabstore exist")
+
+        if(tabnumlimit==count && $("div.tabstore").length==0){
+
+            console.log(tabstoreleft+"tabstoreleft");
+            console.log("here??");
+            var htmltabstore="<div class='tabstore closed'><ul></ul></div>"
+            var htmlicon="<input class='storebutton' type='button'>"
+
+            $("body").append(htmltabstore);
+            $("div.icons").append(htmlicon);
+
+            var tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
+            var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            var tabstoreleft=$(window).width()-tabstorewidth;
+            var tabstoreheight=16;
+            console.log("tabheight"+tabstoreheight)
+
+            $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:1,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
+
+            newOverTab(e);
+
+            $(".storebutton").css({"display":"block"});
+        }
+        else if(count>tabnumlimit){
+            newOverTab(e);
+        }
+        else if(tabnumlimit>count){
+            newTab(e);
+        }
     });
 
     $(document).on('mousedown','.tabs .tab-links a', function(e)  {
@@ -64,7 +132,80 @@ $(document).ready(function() {
         editor.setSession(changeSession);
     });
     $(document).on('click','.tabs .tab-links .closeButton',function(e){
-        var currindex=$(this).parent('li').index();
+
+        if(tabnumlimit+1==count){
+            
+            removeOverTab(e,$(this));
+
+            tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
+            tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            tabstoreleft=$(window).width()-tabstorewidth;
+
+            $("div.tabstore").stop().animate({height:0}).stop().animate({top:"-="+(pxInt($(".tabstore").css("border-width"))/2-1)},{opacity:0}).remove();
+
+            $(".storebutton").remove();
+        }
+        else if(count>tabnumlimit+1){
+            removeOverTab(e,$(this));
+        }
+        else if(tabnumlimit>=count){
+            removeTab(e,$(this));
+        }
+        
+    });
+    var removeOverTab=function(e,that){
+        console.log("removeOVERTABB")
+        var currindex=that.parent('li').index();
+        var currcloseid=that.siblings("a").attr("id");
+        console.log(currindex);
+        var sizeli=$('.tab-links li').length;
+        console.log(size);
+        console.log(leftval+"!");
+
+        var nextstoredid=$("ul li.storedtab:first > a").attr("id");
+
+        if(nextstoredid==quicknum){
+            $("ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({width:qwidth});
+        }
+        else{
+            var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+            $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
+        }
+        $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"});
+
+        if(that.parent('li').hasClass('active')){
+            var successorElement;
+            successorElement=that.parent('li').next();
+            successorElementID=successorElement.children('a').attr('id');
+            successorElement.addClass('active').siblings().removeClass('active')
+            console.log(successorElementID);
+            var nextSession=allseshs[successorElementID];
+            editor.setSession(nextSession);
+
+        }
+        
+        count--;
+
+        if($(".tabstore").hasClass("opened")==true){
+            
+            $("li.storedtab").eq(count-tabnumlimit).fadeOut("fast");
+            $("div.tabstore").delay("fast").animate({height:(1.1875*(count-tabnumlimit)+2)+"em"},{duration:150});
+        }
+
+        that.parent('li').remove();
+        console.log(leftval+"2");
+
+        for(var i=currindex;i<count;i++){
+            $(".tab-links li").eq(i).css({left:leftval[i]});
+        }
+        $(".storebutton").val(count-tabnumlimit);
+
+        e.preventDefault();
+    }
+
+    var removeTab=function(e,that){
+        var currindex=that.parent('li').index();
+        var currcloseid=that.siblings("a").attr("id");
         console.log(currindex);
         var sizeli=$('.tab-links li').length;
         console.log(size);
@@ -74,14 +215,14 @@ $(document).ready(function() {
             var nullsesh=new Session("");
             editor.setSession(nullsesh);
         }
-        else if($(this).parent('li').hasClass('active')){
+        else if(that.parent('li').hasClass('active')){
             var successorElement;
             if(currindex==sizeli-1){
-                successorElement=$(this).parent('li').prev();
+                successorElement=that.parent('li').prev();
 
             }
             else{
-                successorElement=$(this).parent('li').next();
+                successorElement=that.parent('li').next();
             }
             successorElementID=successorElement.children('a').attr('id');
             successorElement.addClass('active').siblings().removeClass('active')
@@ -90,9 +231,11 @@ $(document).ready(function() {
             editor.setSession(nextSession);
 
         }
-        $(this).parent('li').remove();
+        that.parent('li').remove();
         count--;
+        size--;//different for overflow
         leftval.splice(count,1);
+
         console.log(leftval+"2");
 
         for(var i=currindex;i<count;i++){
@@ -104,8 +247,53 @@ $(document).ready(function() {
         }
 
         e.preventDefault();
-    });
+    }
 //once upload function works make it so that it find the extension
+    var newOverTab=function(e){
+        var tabs = $('.tabs');
+        var ultabs=tabs.find('ul');
+
+        var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
+        var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object">'+ tabnum+'</a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
+
+        ultabs.append(newtablinks);
+
+        var newtabfind=$('#'+tabnum);
+
+        console.log("newtabfind:"+newtabfind);
+
+        newtabfind.parent('li').addClass('active').siblings().removeClass('active');
+
+        doc = new Document("newnew123 "+tabnum);
+
+        session = new Session(doc);
+        console.log("session:"+session);
+        editor.setSession(session);
+
+        alldocs[tabnum]=doc;
+        allseshs[tabnum]=session;
+        count++;
+        $("ul li.tab").eq(0).removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
+        $("ul li.storedtab:last").children("img").remove();
+
+        $("ul li.storedtab").eq(count-tabnumlimit-1).css({"display":"none"});
+
+        if($(".tabstore").hasClass("opened")==true){
+            $("div.tabstore").animate({height:(1.1875*(count-tabnumlimit)+2)+"em"},{duration:150});
+            $("li.storedtab").eq(count-tabnumlimit-1).delay("fast").fadeIn("fast");
+        }
+        //"+="+(count-tabnumlimit+2)+"em"11
+        var newtabwidth=8*pxInt($("body").css("font-size"));
+        $(".tab-links li").eq((tabnumlimit-1)).css({width:newtabwidth});
+
+        for(var i=0;i<tabnumlimit;i++){
+            $("li.tab").eq(i).css({"left":leftval[i]});
+        }
+
+        $(".storebutton").val(count-tabnumlimit);
+        e.preventDefault;
+
+    };
     var newTab = function(e){
         console.log("newtableft"+leftval);
         console.log("count:"+count);
@@ -144,8 +332,9 @@ $(document).ready(function() {
         else{
             var value=startval;
         }
+        var newtabwidth=8*pxInt($("body").css("font-size"));
+        $(".tab-links li").eq(count).css({left:value,width:newtabwidth});
 
-        $(".tab-links li").eq(count).css({left:value,width:"8em"});
         leftval[count]=value;
         console.log(leftval);
         size++;
@@ -169,6 +358,13 @@ $(document).ready(function() {
     };
     var extrawidth=30;
     var extraheight=0;
+    var tabwidth;
+
+    var size=0;
+    var leftval=[startval];
+    var startval=25;
+    var leftinterval=155;
+    var tabnumlimit;
 
     function resize(e){
         var containerwidth= $(".icons").offset().left - $(".header").width();
@@ -182,19 +378,148 @@ $(document).ready(function() {
             "width":acewidth,
             "height":aceheight
         });
+        tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
+        console.log("tabwidth"+tabwidth);
+        var lcontainerlim=17;
+        var rcontainerlim=$("div.tab-container").width()-2*pxInt($(".icons input").css("margin-left"))-$(".icons input").width()-$("div.menu").width();  
+        console.log("cont"+rcontainerlim);
+
+        tabnumlimit=Math.ceil((rcontainerlim-lcontainerlim)/leftinterval);
+
+        console.log(tabnumlimit+"limit tab num");  
         editor.getSession().setUseWrapMode(false);   
-        editor.getSession().setUseWrapMode(true);    
+        editor.getSession().setUseWrapMode(true);
+    }
+//alter size, and leftval appropriately
+    function resizeOver(e){
+        var containerwidth= $(".icons").offset().left - $(".header").width();
+        console.log(pxInt($("div.sidebar").css("left")));
+        console.log($(window).width()+"wind");
+        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-extrawidth;
+        var aceheight=$(window).height() - $(".header").height() - extraheight;
+        console.log(containerwidth);
+        $(".tab-container").css({width:containerwidth});
+        $("#editor").css({
+            "width":acewidth,
+            "height":aceheight
+        });
+        tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
+        console.log("tabwidth"+tabwidth);
+        var lcontainerlim=17;
+        var rcontainerlim=$("div.tab-container").width()-2*pxInt($(".icons input").css("margin-left"))-$(".icons input").width()-$("div.menu").width();  
+        rightlim=rcontainerlim;
+        leftlim=lcontainerlim;
+        console.log("cont"+rcontainerlim);
+
+        prevlimit=tabnumlimit;
+        console.log(prevlimit+"prevlmit");
+        console.log(count+"count");
+        tabnumlimit=Math.ceil((rcontainerlim-lcontainerlim)/leftinterval);
+
+        if(count>prevlimit){
+            if(tabnumlimit>prevlimit){//min of (limit-prev and count-prev) come out into containter
+                var outnum=Math.min(tabnumlimit,count)-prevlimit;
+                console.log("outnum"+outnum)
+                for(var i=0;i<outnum;i++){
+                    var nextstoredid=$("ul li.storedtab:first").children("a").attr("id");
+                    console.log("idstore"+nextstoredid);
+                    console.log(quicknum+"quick")
+                    if(nextstoredid==quicknum){
+                        $(".tabstore ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({width:qwidth});
+                        console.log("quicknum")
+                    }
+                    else{
+                        var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+                        $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
+                    }
+                    $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"});
+                    leftval[prevlimit+i]=leftval[prevlimit+i-1]+leftinterval;
+                    console.log(leftval[prevlimit+i])
+                }
+                if(count<=tabnumlimit){
+                    $("div.tabstore").remove();
+                    $(".storebutton").remove();
+                }
+                size+=outnum;
+
+            }
+            else{//prev-limit into store
+                for(var i=0;i<prevlimit-tabnumlimit;i++){
+                    if($("ul.tab-links li.tab:last").hasClass("active")){
+                        $("ul.tab-links li.tab:last").prev().addClass("active").siblings().removeClass("active");
+                    }
+                    $("ul.tab-links li.tab:last").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").prependTo("div.tabstore > ul");
+                    $("ul li.storedtab:first").children("img").remove();
+                    $("ul li.storedtab:first").css({"display":"none"});
+
+                    if($(".tabstore").hasClass("opened")==true){
+                        $("div.tabstore").css({height:(1.1875*(count-tabnumlimit)+2)+"em"});
+                        $("ul li.storedtab:first").css({"display":"block"});
+                    }
+                    leftval.splice(tabnumlimit,prevlimit-tabnumlimit);
+                    console.log("splice1")
+                }
+                size=tabnumlimit;
+            }
+        }
+        else{
+            if(tabnumlimit<count){// add to store :count-lim
+                var htmltabstore="<div class='tabstore closed'><ul></ul></div>"
+                var htmlicon="<input class='storebutton' type='button'>"
+
+                $("body").append(htmltabstore);
+                $("div.icons").append(htmlicon);
+
+                tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
+                tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+                tabstoreleft=$(window).width()-tabstorewidth;
+
+                $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:1,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
+
+                for(var i=0;i<count-tabnumlimit;i++){
+                    if($("ul.tab-links li.tab:last").hasClass("active")){
+                        $("ul.tab-links li.tab:last").prev().addClass("active").siblings().removeClass("active");
+                    }
+                    $("ul.tab-links li.tab:last").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").prependTo("div.tabstore > ul");
+                    $("ul li.storedtab:first").children("img").remove();
+                    $("ul li.storedtab:first").css({"display":"none"});
+                    
+                    if($(".tabstore").hasClass("opened")==true){
+                        $("div.tabstore").css({height:(1.1875*(count-tabnumlimit)+2)+"em"});
+                        $("ul li.storedtab:first").css({"display":"block"});
+                    }
+                }
+                leftval.splice(tabnumlimit,count-tabnumlimit);
+                console.log("splice2");
+                size=tabnumlimit;
+            }
+        }
+        if($(".tabstore").length==1){
+            tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
+            tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            tabstoreleft=$(window).width()-tabstorewidth;
+
+            $("div.tabstore").css({"left":tabstoreleft,"top":($("div.tab-container").height()-1),"width":tabstorewidth});
+
+        }
+        console.log("new"+size);
+        console.log("new leftval"+leftval);
+        for(var i=0;i<size;i++){
+            $(".tab-links li").eq(i).css({left:leftval[i]});
+        }
+        $(".storebutton").val(count-tabnumlimit);
+        console.log(tabnumlimit+"limit tab num");  
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
     }
 
     $(window).on("resize",function(e){
-        resize();    
+        resizeOver();    
     });
     resize(); 
 
-    var size=1;
-    var leftval=[startval];
-    var startval=25;
-    var leftinterval=155;
+    var rightlim=$("div.tab-container").width()-2*pxInt($(".icons input").css("margin-left"))-$(".icons input").width()-$("div.menu").width();
+    var leftlim=17;
 
     $(".tab-links > li").each(function(i){
         if(i==0){
@@ -310,8 +635,6 @@ $(document).ready(function() {
 
            
             console.log("limitval"+limit);
-            var leftlim=17;
-            var rightlim=$("div.tab-container").width()+1.5*$(".icons input").width()-$("div.menu").width();
             // var rightlim=$("div.icons").offset().left - $("div.header").width();
             console.log(rightlim);
             var extramove;
