@@ -36,7 +36,7 @@ div.settings>div>p{
 	color:#252525;
 }
 .settings{
-
+	margin-bottom:-2em;
 }
 
 .unselectable{
@@ -107,7 +107,7 @@ div.url_tab>p{
 }
 
 .urltab{
-
+	font-size:0.85em;
 }
 .recents{
 	padding-top:1em;
@@ -115,12 +115,6 @@ div.url_tab>p{
 	margin-bottom:2em;
 	margin-top:2em;
 	margin-left:-1em;
-	border-top-style:solid;
-	border-top-width:1px;
-	border-top-color:#A9A9A9;
-	border-bottom-style:solid;
-	border-bottom-width:1px;
-	border-bottom-color:#A9A9A9;
 	cursor:pointer;
 	height:50%;
 	
@@ -131,7 +125,14 @@ div.url_tab>p{
 	margin-right:5px;
 }
 .side_header{
-	display:none;
+	background-color: #ccc;
+    font-family:"Century Gothic", CenturyGothic,sans-serif;
+    font-size:0.85em;
+    margin-left:-1.5em;
+    padding-left:.85em;
+    margin-top:1em;
+    cursor: pointer;
+
 }
 #submit {
     background-color: #ccc;
@@ -145,4 +146,5 @@ div.url_tab>p{
 }
 .actions{
 	margin-bottom:1em;
+	font-size:.85em;
 }
