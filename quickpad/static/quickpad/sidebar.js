@@ -46,17 +46,7 @@ $(function(){
 		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
 			editor.getSession().setUseWrapMode(false);
 			editor.getSession().setUseWrapMode(true);
-		}}
-
-			window.define= window.define || ace.define;
-    window.require= ace.require;
-	var Document = require("ace/document").Document;
-    var Session = require("ace/edit_session").EditSession;
-    var edit = require("ace/editor").Editor;
-    ace.require("ace/ext/language_tools");
-
-
-	var editor = ace.edit("editor"););
+		}});
 
     });
 
