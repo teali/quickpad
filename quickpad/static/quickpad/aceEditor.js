@@ -59,9 +59,12 @@ $(document).ready(function() {
             $(this).append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
         }
             
-         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab active").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"}).siblings().removeClass("active");
+         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"}).addClass("active").siblings().removeClass("active");
+        editor.setSession(allseshs[currid]);
+        console.log(leftval+"check")
         for(var i=0;i<size;i++){
-            $(".tab-links li").eq(i).css({left:leftval[i]});
+            $("ul.tab-links li.tab").eq(i).css({left:leftval[i]});
+            console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
     });
     $(document).on("click",".storebutton",function(e){
@@ -81,8 +84,8 @@ $(document).ready(function() {
         $("div.tabstore").toggleClass("closed").toggleClass("opened");
     });
 
-var tabstoretop, tabstorewidth, tabstoreleft, tabstoreheight;
-var nexttabwidth=8*pxInt($("body").css("font-size"));
+    var tabstoretop, tabstorewidth, tabstoreleft, tabstoreheight;
+    var nexttabwidth=8*pxInt($("body").css("font-size"));
 
     $('#addbutton').on('click', function(e){
         console.log($(".tabstore").length+"tabstore exist")
@@ -131,7 +134,7 @@ var nexttabwidth=8*pxInt($("body").css("font-size"));
         console.log(changeSession);
         editor.setSession(changeSession);
     });
-    $(document).on('click','.tabs .tab-links .closeButton',function(e){
+    $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
 
         if(tabnumlimit+1==count){
             
@@ -522,6 +525,7 @@ var nexttabwidth=8*pxInt($("body").css("font-size"));
     var leftlim=17;
 
     $(".tab-links > li").each(function(i){
+        console.log("are you in here each?")
         if(i==0){
             $(this).css({left:startval});
             leftval[0]=startval;

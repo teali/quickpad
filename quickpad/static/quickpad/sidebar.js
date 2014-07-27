@@ -1,5 +1,15 @@
 $(function(){ 
 
+	window.define= window.define || ace.define;
+    window.require= ace.require;
+	var Document = require("ace/document").Document;
+    var Session = require("ace/edit_session").EditSession;
+    var edit = require("ace/editor").Editor;
+    ace.require("ace/ext/language_tools");
+
+
+	var editor = ace.edit("editor");
+
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
 		$(".settings").css("display","none");
@@ -12,7 +22,10 @@ $(function(){
 		var widthdiff=$(window).width() - $(".sidebar").width() + pxInt($(".sidebar").css("font-size"))*11-30;
 		
 		$(".tab-content").animate({"left":"-11em","width":"+=11em"},"fast");
-		$("#editor").animate({width:widthdiff},"fast");
+		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
+			editor.getSession().setUseWrapMode(false);
+			editor.getSession().setUseWrapMode(true);
+		}});
 
     });
 
@@ -30,7 +43,20 @@ $(function(){
 		var widthdiff=$(window).width() -$(".sidebar").width()-30;
     	
 		$(".tab-content").animate({left:"0em","width":"-=11em"},"fast");
-		$("#editor").animate({width:widthdiff},"fast");
+		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
+			editor.getSession().setUseWrapMode(false);
+			editor.getSession().setUseWrapMode(true);
+		}}
+
+			window.define= window.define || ace.define;
+    window.require= ace.require;
+	var Document = require("ace/document").Document;
+    var Session = require("ace/edit_session").EditSession;
+    var edit = require("ace/editor").Editor;
+    ace.require("ace/ext/language_tools");
+
+
+	var editor = ace.edit("editor"););
 
     });
 
