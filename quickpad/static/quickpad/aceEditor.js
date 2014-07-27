@@ -66,6 +66,8 @@ $(document).ready(function() {
             $("ul.tab-links li.tab").eq(i).css({left:leftval[i]});
             console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
     });
     $(document).on("click",".storebutton",function(e){
         console.log("here closed");
@@ -118,6 +120,8 @@ $(document).ready(function() {
         else if(tabnumlimit>count){
             newTab(e);
         }
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
     });
 
     $(document).on('mousedown','.tabs .tab-links a', function(e)  {
@@ -133,6 +137,8 @@ $(document).ready(function() {
         changeSession = allseshs[tabnum];
         console.log(changeSession);
         editor.setSession(changeSession);
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
     });
     $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
 
@@ -154,6 +160,8 @@ $(document).ready(function() {
         else if(tabnumlimit>=count){
             removeTab(e,$(this));
         }
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
         
     });
     var removeOverTab=function(e,that){
