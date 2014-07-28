@@ -20,9 +20,7 @@
 	width:1em;
 	height:1em;
 }
-.file{
-	margin-left:1em;
-}
+
 div.settings>div>div>p{
 
 	display:inline;
@@ -30,7 +28,6 @@ div.settings>div>div>p{
 }
 .settings{
 	font-size:.85em;
-	margin-bottom:-2em;
 	padding-left:1em;
 }
 
@@ -106,16 +103,24 @@ div.url_tab>p{
 	padding-left:1em;
 }
 .recents{
-	padding-top:1em;
 	padding-left:1em;
 	font-size:0.85em;
-	margin-bottom:2em;
-	margin-top:2em;
-	cursor:pointer;
-	height:45%;
+	max-height:25em;
 	
 }
-
+.container{
+	margin:.5em 0 1em 0;
+	max-height:22em;
+	overflow-y:auto;
+}
+.file{
+	margin-left:1em;
+}
+.file>p{
+	display:inline; 
+	color:#252525;
+	cursor:pointer;
+}
 .thumb{
 	margin-right:5px;
 }
@@ -125,12 +130,15 @@ div.url_tab>p{
     font-size:0.85em;
     padding: .2em .5em;
     margin-left:-1.2em;
-    margin-bottom:.5em;
+
     cursor: pointer;
     border-style:solid;
 	border-width:1px;
 	border-color:#A9A9A9;
 
+}
+.side_content{
+	padding:.5em 0 1em 0;
 }
 #submit {
     background-color: #ccc;
@@ -145,5 +153,11 @@ div.url_tab>p{
 .actions{
 	font-size:.85em;
 	padding-left:1em;
-	margin-bottom:.85em;
+
+
+}
+.actions>div>p{
+	display:inline; 
+	color:#252525;
+	cursor:pointer;
 }

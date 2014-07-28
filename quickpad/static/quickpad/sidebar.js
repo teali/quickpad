@@ -19,7 +19,7 @@ $(function(){
 		}
 		$(this).toggleClass("min");
 
-
+		
 	});
 
     $(".collapse").on('click',function(e){

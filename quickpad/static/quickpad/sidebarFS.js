@@ -29,12 +29,15 @@ $(function(){
 		var arr=parse(input);
 		for (var i = 0 ; i <arr.length ; i ++){
 
-			$(".container").append('<div class="file"><img class= "thumb" src="/static/quickpad/file.png"><p style="display:inline; color:#252525;">'+arr[i].name+'</p></div>');
+			$(".container").append('<div class="file"><img class= "thumb" src="/static/quickpad/file.png"><p>'+arr[i].name+'</p></div>');
 		}
 		
 	}
 	
 	function getData(id){
-		return "{website.html,file,0,closed};{file.py,file,0,closed}";
+		return "{website.html,file,0,closed};{file.py,file,0,closed};{website.html,file,0,closed};{file.py,file,0,closed};"+
+		"{website.html,file,0,closed};{file.py,file,0,closed};{website.html,file,0,closed};{file.py,file,0,closed};"+
+		"{website.html,file,0,closed};{file.py,file,0,closed};{website.html,file,0,closed};{file.py,file,0,closed};"+
+		"{website.html,file,0,closed};{file.py,file,0,closed};{website.html,file,0,closed};{file.py,file,0,closed}";
 	}
 	
