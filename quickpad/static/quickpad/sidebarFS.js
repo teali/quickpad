@@ -1,32 +1,12 @@
 $(function(){
 	
 
-	load("{Recent Files,folder,0,closed}",".container");
+	load(getData("s"));
 
 
-	$(".container").on('click','.folder',function(e){
-		e.stopPropagation();
-		if ($(this).hasClass("opened")){
-			
-			if ( $(this).children("div").css("visibility") == "hidden"){
-				$(this).children("div").css("visibility","visible");
+	
 
-				
-			}
-			else{
-				$(this).children("div").css("visibility","hidden");	
-
-				
-			}	
-		}
-		else{
-			$(this).append("<div class='container'></div>");
-			load(getData("id"),$(this).children("div"));
-			$(this).toggleClass("opened");
-		}		
-	});	
-
-	$(".container").on('click','.file',function(e){
+	$(".s").on('click','.file',function(e){
 		e.stopPropagation();
 		alert($(this).attr("class"));	
 	});		
@@ -44,17 +24,13 @@ $(function(){
 	}
 
 
-	function load(input,parentId){
+	function load(input){
 		
 		var arr=parse(input);
 		for (var i = 0 ; i <arr.length ; i ++){
-			if (arr[i].type != "folder"){
-				$(parentId).append('<input type="image" class= "thumb" src="/static/quickpad/file.png">');
-			}
-			$(parentId).append('<div class=  '+ arr[i].type+ ' >'+
-										arr[i].name+'</div>');
-		}
 
+			$(".container").append('<div class="file"><img class= "thumb" src="/static/quickpad/file.png"><p style="display:inline; color:#252525;">'+arr[i].name+'</p></div>');
+		}
 		
 	}
 	

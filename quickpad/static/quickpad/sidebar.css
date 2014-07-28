@@ -7,9 +7,9 @@
 	position:fixed;
 	top: 0;
 	left: 0;
-	padding: 3.5em 0 0 1em;
+	padding: 2.9em 0 0 0;
 	height:100%;
-	width:13em;
+	width:16em;
 	background-color:#EAEAEA;
 	z-index:0;
 	
@@ -20,23 +20,18 @@
 	width:1em;
 	height:1em;
 }
-.folder{
-	position:relative;
-	margin: 0 0 0 1em;
-	
-}
 .file{
-	position:relative;
-	margin: 0 0 0 1.5em;
-
+	margin-left:1em;
 }
-div.settings>div>p{
-	font-size:0.85em;
+div.settings>div>div>p{
+
 	display:inline;
 	color:#252525;
 }
 .settings{
+	font-size:.85em;
 	margin-bottom:-2em;
+	padding-left:1em;
 }
 
 .unselectable{
@@ -54,7 +49,7 @@ select{
 	border-width:1px;
     -webkit-appearance: none; 
     -moz-appearance: none;  
-    width:13em;
+    width:14em;
     background: url("drop.png") no-repeat;
 
     background-position: 151px -1px;
@@ -63,7 +58,7 @@ select{
 	text-overflow: "";
 
 	font-family:"Century Gothic", CenturyGothic,sans-serif;
-	font-size:0.85em;
+
 	margin: 0 0 0 0;
 	margin-left:5px;
 	 -khtml-user-select: none;
@@ -79,7 +74,7 @@ select:focus{
 .collapse{
 	float:right;
 	position:absolute;
-	margin-left:13em;
+	margin-left:15em;
 	top:100%;
 	margin-top:-6.5em;
 	z-index:1;
@@ -87,7 +82,7 @@ select:focus{
 .expand{
 	float:right;
 	position:absolute;
-	margin-left:13em;
+	margin-left:15em;
 	top:100%;
 	margin-top:-6.5em;
 	z-index:1;
@@ -108,30 +103,33 @@ div.url_tab>p{
 
 .urltab{
 	font-size:0.85em;
+	padding-left:1em;
 }
 .recents{
 	padding-top:1em;
+	padding-left:1em;
 	font-size:0.85em;
 	margin-bottom:2em;
 	margin-top:2em;
-	margin-left:-1em;
 	cursor:pointer;
-	height:50%;
+	height:45%;
 	
 }
+
 .thumb{
-	float:left;
-	margin-left:10px;
 	margin-right:5px;
 }
 .side_header{
 	background-color: #ccc;
     font-family:"Century Gothic", CenturyGothic,sans-serif;
     font-size:0.85em;
-    margin-left:-1.5em;
-    padding-left:.85em;
-    margin-top:1em;
+    padding: .2em .5em;
+    margin-left:-1.2em;
+    margin-bottom:.5em;
     cursor: pointer;
+    border-style:solid;
+	border-width:1px;
+	border-color:#A9A9A9;
 
 }
 #submit {
@@ -145,6 +143,7 @@ div.url_tab>p{
 
 }
 .actions{
-	margin-bottom:1em;
 	font-size:.85em;
+	padding-left:1em;
+	margin-bottom:.85em;
 }

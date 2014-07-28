@@ -10,6 +10,18 @@ $(function(){
 
 	var editor = ace.edit("editor");
 
+	$(".side_header").on('click',function(e){
+		if ($(this).hasClass("min")){
+			$(this).siblings().css("display","block");
+		}
+		else{
+			$(this).siblings().css("display","none");
+		}
+		$(this).toggleClass("min");
+
+
+	});
+
     $(".collapse").on('click',function(e){
 		$(this).css("display","none");
 		$(".settings").css("display","none");
@@ -46,17 +58,7 @@ $(function(){
 		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
 			editor.getSession().setUseWrapMode(false);
 			editor.getSession().setUseWrapMode(true);
-		}}
-
-			window.define= window.define || ace.define;
-    window.require= ace.require;
-	var Document = require("ace/document").Document;
-    var Session = require("ace/edit_session").EditSession;
-    var edit = require("ace/editor").Editor;
-    ace.require("ace/ext/language_tools");
-
-
-	var editor = ace.edit("editor"););
+		}});
 
     });
 

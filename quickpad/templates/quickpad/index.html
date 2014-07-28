@@ -50,67 +50,67 @@
 		
 		<div class="sidebar expanded unselectable">
 
-<!-- 			<div class="shortcuts unselectable">
-				<input type="image" src="{{ STATIC_URL }}quickpad/open.png" >
-				<input type="image" src="{{ STATIC_URL }}quickpad/theme.png" >
-				<input type="image" src="{{ STATIC_URL }}quickpad/upload.png" >
-			</div> -->
-
 			<input type="image" class= "collapse" src="{{ STATIC_URL }}quickpad/collapse.png">
 			<input type="image" class= "expand" src ="{{ STATIC_URL }}quickpad/expand.png">
 
 
 
 			<div class="settings unselectable">
-				<div class="side_header" style="font-size:.7225em; margin-top:0em;" >Settings</div>
-				<div class= "theme unselectable">
-					<p>Theme</p><br>
-					<select>
-						<option value="Alpha">Alpha</option>
-						<option value="Beta">Beta</option>
-						<option value="Zenburn">Zenburn</option>
-						<option value="TonySucks">TonySucks</option>
-					</select>
-				</div>
+				<div class="side_header" >Settings</div>
+				<div class="side_content">
+					<div class= "theme unselectable">
+						<p>Theme</p><br>
+						<select>
+							<option value="Alpha">Alpha</option>
+							<option value="Beta">Beta</option>
+							<option value="Zenburn">Zenburn</option>
+							<option value="TonySucks">TonySucks</option>
+						</select>
+					</div>
 
-				<div class= "size unselectable">	
-					<p>Size</p><br>
-					<select>
-						<option value="8">8</option>
-						<option value="10">10</option>
-						<option value="12">12</option>
-						<option value="14">14</option>
-					</select>
-				</div>
+					<div class= "size unselectable">	
+						<p>Size</p><br>
+						<select>
+							<option value="8">8</option>
+							<option value="10">10</option>
+							<option value="12">12</option>
+							<option value="14">14</option>
+						</select>
+					</div>
 
-				<div class= "font unselectable">
-					<p>Font</p><br>
-					<select>
-						<option value="Consolas">Consolas</option>
-						<option value="Times New ROman">Times New Roman</option>
-						<option value="Calibri">Calibri</option>
-						<option value="Comic Sans">Comic Sans</option>
-					</select>
+					<div class= "font unselectable">
+						<p>Font</p><br>
+						<select>
+							<option value="Consolas">Consolas</option>
+							<option value="Times New ROman">Times New Roman</option>
+							<option value="Calibri">Calibri</option>
+							<option value="Comic Sans">Comic Sans</option>
+						</select>
+					</div>
 				</div>
-
 			</div>
 
-	
 			<div class="recents unselectable">
-				<div class="side_header" style="margin-left:-.5em">Recent Files</div>
-				<div class="container unselectable"><input type="image" class="thumb" src="{{ STATIC_URL }}quickpad/folder.png" ></div>
+
+				<div class="side_header">Recent Files</div>
+				<div class="container"></div>
 			</div>
 			
+
 			<div class="actions">
 				<div class = "side_header">Actions</div>
-				<p style="display:inline; color:#252525;">Save</p><br>
-				<p style="display:inline; color:#252525;">Open</p><br>
-				<p style=" display:inline; color:#252525;">Upload</p><br>
+				<div class ="side_content">
+					<p style="display:inline; color:#252525;">Save</p><br>
+					<p style="display:inline; color:#252525;">Open</p><br>
+					<p style=" display:inline; color:#252525;">Upload</p><br>
+				</div>
 			</div>
 			<div class="urltab unselectable">
 				<div class="side_header">Open in New Tab</div>
-				<input type="text" name = "url" style="width:14em; margin-top:1em; ">
-				<input type="submit" name = "submit" id = "submit" value="Enter">
+				<div class="side_content">
+					<input type="text" name = "url" style="width:14em; margin-top:1em; "><br>
+					<input type="submit" name = "submit" id = "submit" value="Enter">
+				</div>
 
 			</div>
 			
