@@ -44,28 +44,33 @@ $(document).ready(function() {
     $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
 
     var count=1;
+
     $(document).on("click",".tabstore li.storedtab",function(e){
         var currid=$(this).children("a").attr("id");
-        var inId=$("ul.tab-links li:first > a").attr("id");
-        if(inId!=quicknum){
+        var tostoreId=$("ul.tab-links li:first > a").attr("id");
+        if(tostoreId!=quicknum){
             $("ul.tab-links li:first > img").remove();
         }
         $("ul.tab-links li:first").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
+
         if(currid==quicknum){
-            $(this).appendTo("ul.tab-links").children("a").css({width:qwidth});
+            $(this).appendTo("ul.tab-links").children("a").css({width:qwidth}).parent("li").css("display","none");
         }
         else{
             var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-            $(this).append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
+            $(this).append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth}).parent("li").css("display","none");
         }
             
-         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"}).addClass("active").siblings().removeClass("active");
+        $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({left:leftval[tabnumlimit-1]}).addClass("active").siblings().removeClass("active");
+        $(".active").fadeIn()
         editor.setSession(allseshs[currid]);
+
         console.log(leftval+"check")
-        for(var i=0;i<size;i++){
-            $("ul.tab-links li.tab").eq(i).css({left:leftval[i]});
+        for(var i=0;i<tabnumlimit;i++){
+            $("ul.tab-links li.tab").eq(i).animate({left:leftval[i]},"fast");
             console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
+
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -73,10 +78,14 @@ $(document).ready(function() {
         console.log("here closed");
 
         if($(".tabstore").hasClass("closed")){
-            $("div.tabstore").stop().animate({height:"+="+(1.1875*(count-tabnumlimit)+2)+"em"},{duration:"fast",
-                complete:function(){
-                    $("li.storedtab").fadeIn("fast");
+            $("div.tabstore").stop().animate({height:"+="+(1.1875*(count-tabnumlimit)+3)+"em"},{duration:"fast",
+                step:function(height){
+                    console.log(height+"click storebutton height step");
+                    if(height>maxtabstoreheight){
+                        $("div.tabstore").stop();
+                    }
             }});
+            //markpoint
             $("li.storedtab").fadeIn("fast");
         }
         else if($(".tabstore").hasClass("opened")){
@@ -86,10 +95,11 @@ $(document).ready(function() {
         $("div.tabstore").toggleClass("closed").toggleClass("opened");
     });
 
-    var tabstoretop, tabstorewidth, tabstoreleft, tabstoreheight;
+    var tabstoretop, tabstorewidth, tabstoreleft,maxtabstoreheight;
     var nexttabwidth=8*pxInt($("body").css("font-size"));
 
-    $('#addbutton').on('click', function(e){
+
+    $(document).on('click','#addbutton', function(e){
         console.log($(".tabstore").length+"tabstore exist")
 
         if(tabnumlimit==count && $("div.tabstore").length==0){
@@ -105,10 +115,10 @@ $(document).ready(function() {
             var tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
             var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
             var tabstoreleft=$(window).width()-tabstorewidth;
-            var tabstoreheight=16;
-            console.log("tabheight"+tabstoreheight)
 
-            $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:1,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
+
+            $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:0.84,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
+            //secondmark
 
             newOverTab(e);
 
@@ -120,6 +130,7 @@ $(document).ready(function() {
         else if(tabnumlimit>count){
             newTab(e);
         }
+
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -143,15 +154,19 @@ $(document).ready(function() {
     $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
 
         if(tabnumlimit+1==count){
-            
+
             removeOverTab(e,$(this));
 
-            tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
+            tabstoretop=pxInt($(".tabstore").css("border-width"));
             tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
             tabstoreleft=$(window).width()-tabstorewidth;
 
-            $("div.tabstore").stop().animate({height:0}).stop().animate({top:"-="+(pxInt($(".tabstore").css("border-width"))/2-1)},{opacity:0}).remove();
-
+            $("div.tabstore").stop().animate({height:0},{duration:"fast",complete:function(){
+                $("div.tabstore").stop().animate({top:"-="+tabstoretop,opacity:0},{duration:"slow",complete:function(){
+                    $("div.tabstore").remove();
+                    
+                }});
+            }});
             $(".storebutton").remove();
         }
         else if(count>tabnumlimit+1){
@@ -164,6 +179,7 @@ $(document).ready(function() {
         editor.getSession().setUseWrapMode(true);
         
     });
+
     var removeOverTab=function(e,that){
         console.log("removeOVERTABB")
         var currindex=that.parent('li').index();
@@ -174,15 +190,18 @@ $(document).ready(function() {
         console.log(leftval+"!");
 
         var nextstoredid=$("ul li.storedtab:first > a").attr("id");
+        var newtabwidth=8*pxInt($("body").css("font-size"));
+
+
 
         if(nextstoredid==quicknum){
-            $("ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({width:qwidth});
+            $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:146,opacity:1},"fast").children("a").animate({width:138},"fast").fadeIn();
         }
         else{
             var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-            $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});
+            $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0,width:0},0).animate({width:newtabwidth,opacity:1},"fast").children("a").animate({width:nexttabwidth},"fast").siblings().addBack().fadeIn();
         }
-        $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"});
+        $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({"display":"block"}).children().css({"display":"block"});
 
         if(that.parent('li').hasClass('active')){
             var successorElement;
@@ -200,15 +219,26 @@ $(document).ready(function() {
         if($(".tabstore").hasClass("opened")==true){
             
             $("li.storedtab").eq(count-tabnumlimit).fadeOut("fast");
-            $("div.tabstore").delay("fast").animate({height:(1.1875*(count-tabnumlimit)+2)+"em"},{duration:150});
+            var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+            console.log("tabheight"+tabstoreheight*16+"max"+maxtabstoreheight);
+            if(tabstoreheight*16<=maxtabstoreheight){
+                $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200}).css({"overflow-y":"hidden","overflow-x":"hidden"});//markpoint}
+            }
+            else{
+                $("div.tabstore").css({"overflow-y":"auto","overflow-x":"hidden"});
+            }
         }
 
-        that.parent('li').remove();
+        // that.parent('li').animate({"opacity":0,duration:"fast",complete:function(){
+            
+        // }});
+        that.siblings().addBack().fadeOut("fast").parent('li').animate({opacity:0, width:0},"fast").remove();
         console.log(leftval+"2");
 
         for(var i=currindex;i<count;i++){
-            $(".tab-links li").eq(i).css({left:leftval[i]});
+            $(".tab-links li").eq(i).animate({left:leftval[i]},"fast");
         }
+
         $(".storebutton").val(count-tabnumlimit);
 
         e.preventDefault();
@@ -242,7 +272,7 @@ $(document).ready(function() {
             editor.setSession(nextSession);
 
         }
-        that.parent('li').remove();
+        that.siblings().addBack().fadeOut("fast").parent('li').animate({opacity:0, width:0},"fast").remove();
         count--;
         size--;//different for overflow
         leftval.splice(count,1);
@@ -261,6 +291,7 @@ $(document).ready(function() {
     }
 //once upload function works make it so that it find the extension
     var newOverTab=function(e){
+
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
 
@@ -284,22 +315,40 @@ $(document).ready(function() {
         alldocs[tabnum]=doc;
         allseshs[tabnum]=session;
         count++;
+        var storedtabwidth=$("div.tabstore").width();
+        console.log(storedtabwidth+"storedtabwidth")
         $("ul li.tab").eq(0).removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
-        $("ul li.storedtab:last").children("img").remove();
 
-        $("ul li.storedtab").eq(count-tabnumlimit-1).css({"display":"none"});
+        $("ul li.storedtab").eq(count-tabnumlimit-1).css({"display":"none"}).children("img").remove();
 
         if($(".tabstore").hasClass("opened")==true){
-            $("div.tabstore").animate({height:(1.1875*(count-tabnumlimit)+2)+"em"},{duration:150});
+            var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+            if(tabstoreheight*16<=maxtabstoreheight){
+                $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint}
+            }
+            else{
+                $("div.tabstore").css({"overflow-y":"auto","overflow-x":"hidden"});
+            }
+            
             $("li.storedtab").eq(count-tabnumlimit-1).delay("fast").fadeIn("fast");
         }
-        //"+="+(count-tabnumlimit+2)+"em"11
         var newtabwidth=8*pxInt($("body").css("font-size"));
-        $(".tab-links li").eq((tabnumlimit-1)).css({width:newtabwidth});
 
+       
+        //"+="+(count-tabnumlimit+2)+"em"11        
+        
         for(var i=0;i<tabnumlimit;i++){
-            $("li.tab").eq(i).css({"left":leftval[i]});
+            $(".tab-links li").eq(i).animate({left:leftval[i]},"fast");
+            if(i==tabnumlimit-1){
+                $(".tab-links li").eq((tabnumlimit-1)).css({"diplay":"none",left:leftval[tabnumlimit-1]}).stop().animate({opacity:0,width:0},0).children().css("display","none").parent("li").stop().animate({opacity:1,width:newtabwidth},"fast").children().fadeIn();
+            }
+            
         }
+        
+        // $(".tab-links li").eq((tabnumlimit-1))
+        
+
+
 
         $(".storebutton").val(count-tabnumlimit);
         e.preventDefault;
@@ -344,7 +393,7 @@ $(document).ready(function() {
             var value=startval;
         }
         var newtabwidth=8*pxInt($("body").css("font-size"));
-        $(".tab-links li").eq(count).css({left:value,width:newtabwidth});
+        $(".tab-links li").eq(count).css({left:value,width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:newtabwidth,opacity:1},{duration:"fast"}).children().fadeIn("fast");
 
         leftval[count]=value;
         console.log(leftval);
@@ -367,8 +416,7 @@ $(document).ready(function() {
         editor.getSession.setMode("ace/mode/"+lang);
 
     };
-    var extrawidth=30;
-    var extraheight=0;
+
     var tabwidth;
 
     var size=0;
@@ -378,21 +426,24 @@ $(document).ready(function() {
     var tabnumlimit;
 
     function resize(e){
+
         var containerwidth= $(".icons").offset().left - $(".header").width();
         console.log(pxInt($("div.sidebar").css("left")));
         console.log($(window).width()+"wind");
-        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-extrawidth;
-        var aceheight=$(window).height() - $(".header").height() - extraheight;
+        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-pxInt($("div.sidebar").css("padding-left"));
+        var aceheight=$(window).height() - $(".header").height();
         console.log(containerwidth);
         $(".tab-container").css({width:containerwidth});
         $("#editor").css({
             "width":acewidth,
             "height":aceheight
         });
+        
         tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
         console.log("tabwidth"+tabwidth);
         var lcontainerlim=17;
         var rcontainerlim=$("div.tab-container").width()-2*pxInt($(".icons input").css("margin-left"))-$(".icons input").width()-$("div.menu").width();  
+        maxtabstoreheight=$("#editor").height();
         console.log("cont"+rcontainerlim);
 
         tabnumlimit=Math.ceil((rcontainerlim-lcontainerlim)/leftinterval);
@@ -403,11 +454,12 @@ $(document).ready(function() {
     }
 //alter size, and leftval appropriately
     function resizeOver(e){
+      
         var containerwidth= $(".icons").offset().left - $(".header").width();
         console.log(pxInt($("div.sidebar").css("left")));
         console.log($(window).width()+"wind");
-        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-extrawidth;
-        var aceheight=$(window).height() - $(".header").height() - extraheight;
+        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-pxInt($("div.sidebar").css("padding-left"));
+        var aceheight=$(window).height() - $(".header").height();
         console.log(containerwidth);
         $(".tab-container").css({width:containerwidth});
         $("#editor").css({
@@ -420,6 +472,7 @@ $(document).ready(function() {
         var rcontainerlim=$("div.tab-container").width()-2*pxInt($(".icons input").css("margin-left"))-$(".icons input").width()-$("div.menu").width();  
         rightlim=rcontainerlim;
         leftlim=lcontainerlim;
+        maxtabstoreheight=$("#editor").height();
         console.log("cont"+rcontainerlim);
 
         prevlimit=tabnumlimit;
@@ -464,7 +517,16 @@ $(document).ready(function() {
                     $("ul li.storedtab:first").css({"display":"none"});
 
                     if($(".tabstore").hasClass("opened")==true){
-                        $("div.tabstore").css({height:(1.1875*(count-tabnumlimit)+2)+"em"});
+                        var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+
+                        if(tabstoreheight*16<=maxtabstoreheight){
+                            $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint}
+                        }
+                        else{
+                            $("div.tabstore").css({"overflow-y":"auto","overflow-x":"hidden"});
+                        }   
+
+                        
                         $("ul li.storedtab:first").css({"display":"block"});
                     }
                     leftval.splice(tabnumlimit,prevlimit-tabnumlimit);
@@ -485,7 +547,7 @@ $(document).ready(function() {
                 tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
                 tabstoreleft=$(window).width()-tabstorewidth;
 
-                $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:1,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
+                $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:0.84,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
 
                 for(var i=0;i<count-tabnumlimit;i++){
                     if($("ul.tab-links li.tab:last").hasClass("active")){
@@ -496,7 +558,13 @@ $(document).ready(function() {
                     $("ul li.storedtab:first").css({"display":"none"});
                     
                     if($(".tabstore").hasClass("opened")==true){
-                        $("div.tabstore").css({height:(1.1875*(count-tabnumlimit)+2)+"em"});
+                        var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+                        if(tabstoreheight*16<=maxtabstoreheight){
+                            $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint
+                        }
+                        else{
+                            $("div.tabstore").css({"overflow-y":"auto","overflow-x":"hidden"});
+                        }       
                         $("ul li.storedtab:first").css({"display":"block"});
                     }
                 }
@@ -729,6 +797,7 @@ $(document).ready(function() {
         
         e.preventDefault();
     });
+
 
 
 
