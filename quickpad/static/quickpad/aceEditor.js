@@ -48,10 +48,11 @@ $(document).ready(function() {
     $(document).on("click",".tabstore li.storedtab",function(e){
         var currid=$(this).children("a").attr("id");
         var tostoreId=$("ul.tab-links li:first > a").attr("id");
+        var activeid=$("li.tab").index(".active");
         if(tostoreId!=quicknum){
             $("ul.tab-links li:first > img").remove();
         }
-        $("ul.tab-links li:first").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
+        $("ul.tab-links li:first").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul");
 
         if(currid==quicknum){
             $(this).appendTo("ul.tab-links").children("a").css({width:qwidth}).parent("li").css("display","none");
@@ -60,6 +61,9 @@ $(document).ready(function() {
             var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
             $(this).append(closehtml).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth}).parent("li").css("display","none");
         }
+        if(activeid>0){
+            $(".active").stop().animate({left:leftval[activeid-1]})
+        }
             
         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({left:leftval[tabnumlimit-1]}).addClass("active").siblings().removeClass("active");
         $(".active").fadeIn()
@@ -67,7 +71,7 @@ $(document).ready(function() {
 
         console.log(leftval+"check")
         for(var i=0;i<tabnumlimit;i++){
-            $("ul.tab-links li.tab").eq(i).animate({left:leftval[i]},"fast");
+            $("ul.tab-links li.tab").eq(i).stop(true,true).animate({left:leftval[i]});
             console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
 
@@ -78,7 +82,7 @@ $(document).ready(function() {
         console.log("here closed");
 
         if($(".tabstore").hasClass("closed")){
-            $("div.tabstore").stop().animate({height:"+="+(1.1875*(count-tabnumlimit)+3)+"em"},{duration:"fast",
+            $("div.tabstore").stop().animate({height:"+="+(1.125*(count-tabnumlimit)+2)+"em"},{duration:"fast",
                 step:function(height){
                     console.log(height+"click storebutton height step");
                     if(height>maxtabstoreheight){
@@ -186,6 +190,7 @@ $(document).ready(function() {
         var currcloseid=that.siblings("a").attr("id");
         console.log(currindex);
         var sizeli=$('.tab-links li').length;
+        var activeid=$("li.tab").index(".active")
         console.log(size);
         console.log(leftval+"!");
 
@@ -195,14 +200,17 @@ $(document).ready(function() {
 
 
         if(nextstoredid==quicknum){
-            $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:146,opacity:1},"fast").children("a").animate({width:138},"fast").fadeIn();
+            $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:146,opacity:1}).children("a").animate({width:138}).fadeIn();
         }
         else{
             var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-            $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0,width:0},0).animate({width:newtabwidth,opacity:1},"fast").children("a").animate({width:nexttabwidth},"fast").siblings().addBack().fadeIn();
+            $("ul li.storedtab:first").append(closehtml).appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0,width:0},0).animate({width:newtabwidth,opacity:1}).children("a").animate({width:nexttabwidth}).siblings().addBack().fadeIn();
         }
         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({"display":"block"}).children().css({"display":"block"});
 
+        if(activeid>0){
+            $(".active").stop().animate({left:leftval[activeid-1]})
+        }
         if(that.parent('li').hasClass('active')){
             var successorElement;
             successorElement=that.parent('li').next();
@@ -219,7 +227,7 @@ $(document).ready(function() {
         if($(".tabstore").hasClass("opened")==true){
             
             $("li.storedtab").eq(count-tabnumlimit).fadeOut("fast");
-            var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+            var tabstoreheight=(1.125*(count-tabnumlimit)+2);
             console.log("tabheight"+tabstoreheight*16+"max"+maxtabstoreheight);
             if(tabstoreheight*16<=maxtabstoreheight){
                 $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200}).css({"overflow-y":"hidden","overflow-x":"hidden"});//markpoint}
@@ -229,14 +237,12 @@ $(document).ready(function() {
             }
         }
 
-        // that.parent('li').animate({"opacity":0,duration:"fast",complete:function(){
-            
-        // }});
-        that.siblings().addBack().fadeOut("fast").parent('li').animate({opacity:0, width:0},"fast").remove();
+
+        that.siblings().addBack().fadeOut().parent('li').animate({opacity:0, width:0}).remove();
         console.log(leftval+"2");
 
         for(var i=currindex;i<count;i++){
-            $(".tab-links li").eq(i).animate({left:leftval[i]},"fast");
+            $(".tab-links li").eq(i).stop(true,true).animate({left:leftval[i]});
         }
 
         $(".storebutton").val(count-tabnumlimit);
@@ -272,7 +278,7 @@ $(document).ready(function() {
             editor.setSession(nextSession);
 
         }
-        that.siblings().addBack().fadeOut("fast").parent('li').animate({opacity:0, width:0},"fast").remove();
+        that.siblings().addBack().fadeOut().parent('li').animate({opacity:0, width:0}).remove();
         count--;
         size--;//different for overflow
         leftval.splice(count,1);
@@ -294,7 +300,7 @@ $(document).ready(function() {
 
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
-
+        var activeid=$("li.tab").index(".active");
         var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
         var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object">'+ tabnum+'</a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
 
@@ -303,7 +309,10 @@ $(document).ready(function() {
         var newtabfind=$('#'+tabnum);
 
         console.log("newtabfind:"+newtabfind);
-
+        if(activeid>0){
+            $(".active").stop().animate({left:leftval[activeid-1]})
+        }
+        
         newtabfind.parent('li').addClass('active').siblings().removeClass('active');
 
         doc = new Document("newnew123 "+tabnum);
@@ -317,12 +326,12 @@ $(document).ready(function() {
         count++;
         var storedtabwidth=$("div.tabstore").width();
         console.log(storedtabwidth+"storedtabwidth")
-        $("ul li.tab").eq(0).removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").appendTo("div.tabstore > ul");
+        $("ul li.tab").eq(0).removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul");
 
         $("ul li.storedtab").eq(count-tabnumlimit-1).css({"display":"none"}).children("img").remove();
 
         if($(".tabstore").hasClass("opened")==true){
-            var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+            var tabstoreheight=(1.125*(count-tabnumlimit)+2);
             if(tabstoreheight*16<=maxtabstoreheight){
                 $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint}
             }
@@ -338,9 +347,9 @@ $(document).ready(function() {
         //"+="+(count-tabnumlimit+2)+"em"11        
         
         for(var i=0;i<tabnumlimit;i++){
-            $(".tab-links li").eq(i).animate({left:leftval[i]},"fast");
+            $(".tab-links li").eq(i).stop(true,true).animate({left:leftval[i]});
             if(i==tabnumlimit-1){
-                $(".tab-links li").eq((tabnumlimit-1)).css({"diplay":"none",left:leftval[tabnumlimit-1]}).stop().animate({opacity:0,width:0},0).children().css("display","none").parent("li").stop().animate({opacity:1,width:newtabwidth},"fast").children().fadeIn();
+                $(".tab-links li").eq((tabnumlimit-1)).css({"diplay":"none",left:leftval[tabnumlimit-1]}).stop().animate({opacity:0,width:0},0).children().css("display","none").parent("li").stop().animate({opacity:1,width:newtabwidth}).children().fadeIn();
             }
             
         }
@@ -393,7 +402,7 @@ $(document).ready(function() {
             var value=startval;
         }
         var newtabwidth=8*pxInt($("body").css("font-size"));
-        $(".tab-links li").eq(count).css({left:value,width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:newtabwidth,opacity:1},{duration:"fast"}).children().fadeIn("fast");
+        $(".tab-links li").eq(count).css({left:value,width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:newtabwidth,opacity:1}).children().fadeIn();
 
         leftval[count]=value;
         console.log(leftval);
@@ -517,7 +526,7 @@ $(document).ready(function() {
                     $("ul li.storedtab:first").css({"display":"none"});
 
                     if($(".tabstore").hasClass("opened")==true){
-                        var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+                        var tabstoreheight=(1.125*(count-tabnumlimit)+2);
 
                         if(tabstoreheight*16<=maxtabstoreheight){
                             $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint}
@@ -558,7 +567,7 @@ $(document).ready(function() {
                     $("ul li.storedtab:first").css({"display":"none"});
                     
                     if($(".tabstore").hasClass("opened")==true){
-                        var tabstoreheight=(1.1875*(count-tabnumlimit)+3);
+                        var tabstoreheight=(1.125*(count-tabnumlimit)+2);
                         if(tabstoreheight*16<=maxtabstoreheight){
                             $("div.tabstore").stop().animate({height:tabstoreheight+"em"},{duration:200});//markpoint
                         }
