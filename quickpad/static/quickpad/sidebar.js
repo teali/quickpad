@@ -1,3 +1,7 @@
+function pxInt(a){
+    return parseInt(a,10);
+};
+
 $(function(){ 
 
 	window.define= window.define || ace.define;
@@ -19,10 +23,10 @@ $(function(){
     	$(".actions").css("display","none");
 		$(".sidebar").animate({left:"-11em"},"fast","linear",function(){}).toggleClass("collapsed").toggleClass("expanded");
 
-		var widthdiff=$(window).width() - $(".sidebar").width() + pxInt($(".sidebar").css("font-size"))*11-30;
+		var acewidth=$(window).width() - ($(".sidebar").width() -176)-pxInt($("div.sidebar").css("padding-left"));
 		
 		$(".tab-content").animate({"left":"-11em","width":"+=11em"},"fast");
-		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
+		$("#editor").animate({width:acewidth},{duration:"fast",progress:function(){
 			editor.getSession().setUseWrapMode(false);
 			editor.getSession().setUseWrapMode(true);
 		}});
@@ -40,10 +44,10 @@ $(function(){
 			$(".collapse").css("display","block");
 		}).toggleClass("expanded").toggleClass("collapsed");
 		
-		var widthdiff=$(window).width() -$(".sidebar").width()-30;
+		var acewidth=$(window).width() - $(".sidebar").width()-pxInt($("div.sidebar").css("padding-left"));
     	
 		$(".tab-content").animate({left:"0em","width":"-=11em"},"fast");
-		$("#editor").animate({width:widthdiff},{duration:"fast",progress:function(){
+		$("#editor").animate({width:acewidth},{duration:"fast",progress:function(){
 			editor.getSession().setUseWrapMode(false);
 			editor.getSession().setUseWrapMode(true);
 		}});
