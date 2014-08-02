@@ -92,6 +92,21 @@ def my_cookie(request):
 	else: response['cs'] = '0'		
 	return HttpResponse(json.dumps(response), content_type = "application/json")
 
+def change_file(request):
+	try:
+		data=json.loads(request.body)
+		if len(FileLink.objects.filter(fileId=data["fId"])) == 0:
+			return HttpResponse(status=404)
+		curFile = FileLink.objects.get(fileId=fId)	
+		if curFile.expTime < datetime.utcnow().replace(tzinfo=utc):		
+			curFile.delete()
+			return HttpResponse(status=404)	
+		curFile.file.save(data['name'],ContentFile(data["file"]))
+		curFile.save()
+	except:
+		return HttpResponse(status=400)
+	return HttpResponse('')
+
 def change_tabs(request):
 	try:
 		data=json.loads(request.body)
