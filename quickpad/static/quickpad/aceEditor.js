@@ -31,7 +31,11 @@ function splitext(filename){
     if( a.length === 1 || ( a[0] === "" && a.length === 2 ) ) {
         return "";
     }
-    return "."+a.pop();
+    var temp=a.pop();
+    if(temp=="js"){
+        return ".tjs"
+    }
+    return "."+temp;
 }
 
 $(document).ready(function() { 
@@ -51,7 +55,7 @@ $(document).ready(function() {
         return cookieValue;
     }
     var csrftoken = getCookie('csrftoken');
-    var cookiedata;
+
     function csrfSafeMethod(method) {
         // these HTTP methods do not require CSRF protection
         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -62,22 +66,6 @@ $(document).ready(function() {
             if (!csrfSafeMethod(settings.type)) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
-        }
-    });
-        //checks if cookies are enabled
-    $.get("mycookie").done(function(data){
-        console.log(data+"THE COOKIEEE");
-        console.log(data);
-        cookiedata=data;
-        var tablist=data.tabs.split("|||");
-        console.log(tablist+"tablist")
-        for(var i=0;i<tablist.length;i++){
-            console.log(tablist[i]+"initating and starting")
-            $.get( "d/"+tablist[i], function( data, textStatus, jqXHR ) {
-                console.log( jqXHR.getResponseHeader('Content-Disposition').replace('attachment; filename=',''));
-                console.log(data);
-            });
-            console.log("--------------")
         }
     });
 
@@ -101,26 +89,242 @@ $(document).ready(function() {
     editor.resize();  
 
     var quicknum= new Date().getTime() + Math.floor(Math.random()*100000);
-    var qdoc = new Document(testtxt);
-    var qsession = new Session(qdoc);
+
 
     var allseshs = [];
     var alldocs = [];
-    var tabext = {};
-    var tabnames={};
-    var keys ={};
+    var tabext = [];
+    var tabnames=[];
+    var keys =[];
+    
+    var quickname="QuickQode";
+    var quickExt="";
+    var qdoc = new Document(testtxt);
+    var qsession = new Session(qdoc);
 
     allseshs[quicknum]=qsession;
     alldocs[quicknum]=qdoc;
-    tabext[quicknum]=".py";
-    tabnames[quicknum]="QuickQode";
-    var activeid =quicknum;
+    tabext[quicknum]=quickExt;
+    tabnames[quicknum]=quickname;                               
 
-    editor.setSession(qsession);
+    
+    var activeid = quicknum;
+
+    // editor.setSession(qsession);
     var qwidth= 9+6.0/7+"em";
     $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
 
+    var count=1;
+    
+    var tabwidth;
 
+    var size=0;
+    var startval=25;
+    var leftval=[startval];
+    var leftinterval=155;
+    var tabnumlimit;
+
+    function resize(e){
+
+        var containerwidth= $(".icons").offset().left - $(".header").width();
+        console.log(pxInt($("div.sidebar").css("left")));
+        console.log($(window).width()+"wind");
+        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-pxInt($("div.sidebar").css("padding-left"));
+        var aceheight=$(window).height() - $(".header").height();
+        console.log(containerwidth);
+        $(".tab-container").css({width:containerwidth});
+        $("#editor").css({
+            "width":acewidth,
+            "height":aceheight
+        });
+        
+        tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
+        console.log("tabwidth"+tabwidth);
+        var lcontainerlim=17;
+        var rcontainerlim=$("div.tab-container").width()-16-19.5-$("div.menu").width();  
+        maxtabstoreheight=$("#editor").height();
+        console.log("cont"+rcontainerlim);
+
+        tabnumlimit=Math.ceil((rcontainerlim-lcontainerlim)/leftinterval);
+
+        console.log(tabnumlimit+"limit tab num");  
+        editor.getSession().setUseWrapMode(false);   
+        editor.getSession().setUseWrapMode(true);
+    }
+    resize(); 
+
+    var qqReach=false;
+    var qqInStore=false;
+    var tabflow=false;
+
+    function inittab(i,tablist,prevactive,limit){
+        if(i>=limit){
+            console.log("inittab finished")
+            return;
+        }
+        createstore();
+        var contentfullname,contentdata,contentname,contentExt;
+        var tempdoc,tempsession;
+        var tempid=new Date().getTime() + Math.floor(Math.random()*100000);
+
+        $.get( "d/"+tablist[i], function( data, textStatus, jqXHR ) {
+
+            contentfullname=jqXHR.getResponseHeader('Content-Disposition').replace('attachment; filename=','');
+            console.log(Object.prototype.toString.call(tablist));
+            console.log(tablist[i])
+            console.log("fullname:"+contentfullname)
+            contentdata=data;
+
+            contentExt=splitext(contentfullname);
+            console.log(qqInStore + "qqInStore")
+            contentname=splitname(contentfullname);
+            console.log(qqReach + "qqReach")
+            if(!(contentExt=="" && contentname=="QuickQode")){
+                keys[tempid]=tablist[i];
+                tabnames[tempid]=contentname;
+                tabext[tempid]=contentExt;
+                console.log(tablist[i])
+            }
+            
+
+            console.log(keys+"keys after each input");
+
+            if(contentExt=="" && contentname=="QuickQode"){
+                console.log("quickpad scanned "+quicknum)
+                keys[quicknum]=tablist[i];
+
+                tempdoc=new Document(contentdata);
+                tempsession=new Session(tempdoc);
+
+                alldocs[quicknum]=tempdoc;
+                allseshs[quicknum]=tempsession;
+
+                tabnames[quicknum]=contentname;
+                tabext[quicknum]=contentExt;
+
+                if(tablist[i]==prevactive){
+                    editor.setSession(tempsession);
+                    editor.getSession().setUseWrapMode(false);   
+                    editor.getSession().setUseWrapMode(true);
+                }
+                qqReach=true;
+
+            }
+            else if(qqInStore==false){
+                console.log(data);
+                console.log("^that is the data")
+                if(qqReach==false){
+                    console.log(contentfullname)
+                    newTab(contentfullname,"before",tempid);
+                    console.log("tabnum"+tabnumlimit+"the i value:"+i)
+                    if(count-1==tabnumlimit){
+                        console.log("have you been here?@@@@@@@@@@@@@@@@@@@@@@@@@1")
+                        qqInStore=true;
+                        $("ul li.tab:last").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul").css({display:"none"});
+                    }
+                }
+                else{
+                    newTab(contentfullname,"after",tempid);
+                    console.log("have you been here?@@@@@@@@@$$$$$$$@@@@@@1")
+
+                }
+                console.log("the i val"+i)
+                // tempid=$("li.tab").eq(i).children("a").attr("id");
+                tempdoc=new Document(contentdata);
+                tempsession = new Session(tempdoc);
+
+                alldocs[tempid]=tempdoc;
+                console.log(tempdoc);
+                allseshs[tempid]=tempsession;
+                console.log(allseshs[tempid]+"allseshs tmp~~~~~~~~~~~~~~~~~~~~~``==="+tempid );
+
+                if(tablist[i]==prevactive){
+                    editor.setSession(tempsession);
+                    $("li.tab").removeClass("active")
+                    $("li.storedtab").removeClass("active")
+                    $("#"+tempid).parent("li").addClass("active");
+                    editor.getSession().setUseWrapMode(false);   
+                    editor.getSession().setUseWrapMode(true);
+                }
+            }
+            else if(qqInStore==true){
+                console.log("ARE YOU EVER HERE???~~~~~~~~~~~~~~~~~~~~")
+                if(qqReach==false){
+                    newOverTab(contentfullname,tempid,"before");
+                }
+                else{
+                    newOverTab(contentfullname,tempid,"after");
+                }
+                // tempid=$("li.storedtab").eq(i-tabnumlimit).children("a").attr("id");
+                tempdoc=new Document(contentdata);
+                tempsession = new Session(tempdoc);
+
+                alldocs[tempid]=tempdoc;
+                allseshs[tempid]=tempsession;
+            }
+            else if()
+            inittab(i+1,tablist,prevactive,limit)
+        });  
+    }
+    function createstore(){
+        var htmltabstore="<div class='tabstore closed'><ul></ul></div>"
+        var htmlicon="<input class='storebutton' type='button'>"
+
+        $("body").append(htmltabstore);
+        $("div.icons").append(htmlicon);
+
+        var tabstoretop=$("div.tab-container").height()-1;
+        var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+        var tabstoreleft=$(window).width()-tabstorewidth;
+
+
+        $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,opacity:0.84,"display":"block"});
+        $(".storebutton").css({"display":"block"});
+        
+
+        
+    }
+    var cookiedata;
+    //checks if cookies are enabled
+    $.get("mycookie").done(function(data){
+        console.log(data+"THE COOKIEEE");
+        console.log(data);
+        cookiedata=data;
+        var tablist=data.tabs.split("|||");
+        for(var i=0;i<tablist.length;i++){
+            if(tablist[i]==""){
+                tablist.splice(i,1);
+            }
+        }
+        var doubledel = [];
+        $.each(tablist, function(i, el){
+            if($.inArray(el, doubledel) == -1){
+                doubledel.push(el);
+            }
+        });
+        tablist=doubledel;
+        console.log("final tablist"+tablist)
+        var prevactive=data.active;
+
+        console.log(tablist+"tablist")
+    
+
+        if(tablist=="None" || tablist==""){
+            editor.setSession(qsession);
+            editor.getSession().setUseWrapMode(false);   
+            editor.getSession().setUseWrapMode(true);
+        }
+        else{
+            console.log(tablist.length+"tablistlength")
+            // for(var i=0;i<tablist.length;i++){
+                var i=0
+                console.log(tablist[i]+" initating and starting  i:"+i)
+                inittab(i,tablist,prevactive,tablist.length);
+                
+            // }
+        console.log("done~~~~~~~~~~~~~~~~~~~~~~~~~~```````")
+        }
+    });
 
     var arr = { 'file': "print \"It works!\"", 
                 'fileName' : "JSONtest", 
@@ -138,11 +342,13 @@ $(document).ready(function() {
 
     var edit = {'fId':"jfElnrd2",
                 'name':'ze name',
+                'ext':'.py',
                 'file':'thecode'};
 
     onkeydown = function(e){
         if(e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)){
             e.preventDefault();
+            alert("save this override")
             saveTab();
         }
     }
@@ -151,8 +357,22 @@ $(document).ready(function() {
         bindKey: {win: 'Ctrl-s',  mac: 'Command-s'},
         exec: function(editor) {
             saveTab();
+            alert("save this override for ace editor")
         }
     });
+
+
+    // var testbool=false;
+    // function foo(i){
+    //     if(i==5){
+    //         testbool=true;
+    //     }
+    // }
+    // for(var i=0;i<10;i++){
+    //     console.log("this is for testing purposes");
+    //     foo(i);
+    //     console.log(i+" "+testbool)
+    // }
     $("select").on("change", function(){
 
         console.log($(this).val());
@@ -193,7 +413,7 @@ $(document).ready(function() {
                 success: function(data) {
                     console.log(data['link']);
                     keys[activeid]=data['link'];
-                    console.log("keysaved"+keys[activeid]);
+                    console.log("keysaved"+keys[activeid]+"activeid:"+activeid);
                 }
             });
         }
@@ -215,53 +435,77 @@ $(document).ready(function() {
             })
         }
     };
-    saveTab();
+    function keygen(arr,saveid){
+        $.ajax({
+            url: 'au',
+            type: 'POST',
+            data: JSON.stringify(arr),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function(data) {
+                console.log(data['link']);
+                keys[saveid]=data['link'];
+                console.log("keysaved"+keys[saveid]);
+            }
+        });
+    }
+    function tabrefresh(edit){
+        $.ajax({
+            url:"editfile",
+            tpye:"POST",
+            data: JSON.stringify(edit),
+            contentType: 'application/json; charset=utf-8',
+            dataType:"json",
+            success: function(){
+                console.log("edit done");
+            }
+        })
+    }
+    // saveTab();
     var saveSession= function(){
+        for(var i in keys){
+            console.log(i+"undefined deleteion"+keys[i]);
+            if(keys[i]==undefined){
+                tempkeys=keys.filter(Boolean);
+                console.log(tempkeys)
+                keys=tempkeys
+                console.log("something was deleted")
+            }
+            else{
+                console.log("nothign was deleted")
+            }
+        }
         console.log("saving session")
         var currentID=[];
+        console.log("save sesssion count::"+count)
         if(count>0){
             var starting=Math.min(count,tabnumlimit);    
             for(var i=0;i<starting;i++){
                 var saveid=$("li.tab").eq(i).children("a").attr("id");
+                console.log("saveid"+saveid)
                 currentID[i]=saveid;
                 console.log(i);
                 if((saveid in keys)==false){
+                    console.log(alldocs[saveid]+"savdsa")
                     arr['file']=alldocs[saveid].getValue();
                     arr['fileName']=tabnames[saveid];
+                    console.log(tabnames[saveid]+"current saved name");
                     arr['fileExt']=tabext[saveid];
                     arr['eDays']=9999;
                     arr['eHours']=1;
                     arr['eMinutes']=1;
 
-                    $.ajax({
-                        url: 'au',
-                        type: 'POST',
-                        data: JSON.stringify(arr),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType: 'json',
-                        success: function(data) {
-                            console.log(data['link']);
-                            keys[saveid]=data['link'];
-                            console.log("keysaved"+keys[saveid]);
-                        }
-                    });
+                    keygen(arr,saveid);
                 }
                 else{
                     edit['fId']=keys[saveid];
                     edit['name']=tabnames[saveid];
+                    console.log(tabnames[saveid]+"       current edited name");
+                    edit['ext']=tabext[saveid];
                     console.log(saveid+"saveid");
                     edit['file']=alldocs[saveid].getValue();
 
-                    $.ajax({
-                        url:"editfile",
-                        tpye:"POST",
-                        data: JSON.stringify(edit),
-                        contentType: 'application/json; charset=utf-8',
-                        dataType:"json",
-                        success: function(){
-                            console.log("edit done");
-                        }
-                    })
+                    tabrefresh(edit);
                 }
             }
             if(count>tabnumlimit){
@@ -274,39 +518,22 @@ $(document).ready(function() {
                         console.log('first cond in here?')
                         arr['file']=alldocs[saveid].getValue();
                         arr['fileName']=tabnames[saveid];
+                        console.log(tabnames[saveid]+"current saved name2");
                         arr['fileExt']=tabext[saveid];
                         arr['eDays']=9999;
                         arr['eHours']=1;
                         arr['eMinutes']=1;
 
-                        $.ajax({
-                            url: 'au',
-                            type: 'POST',
-                            data: JSON.stringify(arr),
-                            contentType: 'application/json; charset=utf-8',
-                            dataType: 'json',
-                            success: function(data) {
-                                console.log(data['link']);
-                                keys[saveid]=data['link'];
-                                console.log("keysaved"+keys[saveid]);
-                            }
-                        });
+                        keygen(arr,saveid)
                     }
                     else{
                         edit['fId']=keys[saveid];
                         edit['name']=tabnames[saveid];
+                        edit['ext']=tabext[saveid];
+                        console.log(tabnames[saveid]+"current edit name2");
                         edit['file']=alldocs[saveid].getValue();
 
-                        $.ajax({
-                            url:"editfile",
-                            tpye:"POST",
-                            data: JSON.stringify(edit),
-                            contentType: 'application/json; charset=utf-8',
-                            dataType:"json",
-                            success: function(){
-                                console.log("edit done");
-                            }
-                        })
+                        tabrefresh(edit);
                     }
                 }
             }
@@ -317,11 +544,13 @@ $(document).ready(function() {
             }
             var tabstring=keystring.join("|||");
             var keyactiveindex=$("#"+activeid).parent("li").index();
+            console.log(keyactiveindex)
             console.log(activeid+" id");
             tab['tabs']=tabstring;
             console.log(tabstring+" tabstring")
             console.log(currentID[keyactiveindex]+" activeid")
             tab['active']=keys[currentID[keyactiveindex]];
+            console.log(keys)
             console.log(keys[currentID[keyactiveindex]]+" activekey");
 
             $.ajax({
@@ -331,66 +560,51 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data+ "heres?");
+                    console.log(data+ "SETE TABS SUCCESSheres?");
                 }
             });
 
         }
     }
+    // saveSession();
+    
+    var savingprogress=false;
+    var saveprogcount=0;
+    function savetimer(e){
+        console.log("boolean>?"+savingprogress);
 
-    setInterval(function(){saveSession()},5000);
+        if(savingprogress==false){
+            savingprogress=true;
+            saveSession();
+            var save = setInterval(function(){
+                saveSession();
+            },3000);
+            var progcount = setInterval(function(){
+                saveprogcount++;
+                
+                console.log("in here"+saveprogcount)
+                if(saveprogcount>=6){//6 sec
+                    saveprogcount=0;
+                    savingprogress=false;
+                    clearInterval(save);
+                    clearInterval(progcount);
 
-    //changes tabs for session
-    $.ajax({
-    url: 'settabs',
-        type: 'POST',
-        data: JSON.stringify(tab),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function(data) {
-            console.log(data);
+                }
+            },1000)                                         
         }
-    });
-
-    //changes settings for session
-    $.ajax({
-    url: 'setsettings',
-        type: 'POST',
-        data: JSON.stringify(settings),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function(data) {
-            console.log(data);
+        else{
+            saveprogcount=0;
+            return;
         }
-    });
+        
 
-    //au(async upload) uploads a file
-    $.ajax({
-    url: 'au',
-        type: 'POST',
-        data: JSON.stringify(arr),
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        success: function(data) {
-            console.log(data['link']);
-        }
-    });
+    }
 
-    $.ajax({
-        url:"editfile",
-        tpye:"POST",
-        data: JSON.stringify(edit),
-        contentType: 'application/json; charset=utf-8',
-        dataType:"json"
+    editor.on("input",function(e){
+        console.log("im edtting the session")
+        savetimer(e);
     })
 
-    //downloads a file
-    $.get( "d/jfElnrd2", function( data, textStatus, jqXHR ) {
-        console.log( jqXHR.getResponseHeader('Content-Disposition').replace('attachment; filename=',''));
-        console.log(data);
-    });
-
-    var count=1;
 
     $(document).on("click",".tabstore li.storedtab",function(e){
         var currid=$(this).children("a").attr("id");
@@ -419,7 +633,7 @@ $(document).ready(function() {
             $("ul.tab-links li.tab").eq(i).stop(true,true).animate({left:leftval[i]});
             console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
-
+        saveSession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -448,7 +662,7 @@ $(document).ready(function() {
     var tabstoretop, tabstorewidth, tabstoreleft,maxtabstoreheight;
     var nexttabwidth=8*pxInt($("body").css("font-size"));
 
-    var newTabfinal = function(e,name){
+    var newTabfinal = function(name){
         console.log($(".tabstore").length+"tabstore exist")
 
 
@@ -470,23 +684,24 @@ $(document).ready(function() {
             $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:0.84,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
             //secondmark
 
-            newOverTab(e,name);
+            newOverTab(name);
 
             $(".storebutton").css({"display":"block"});
         }
         else if(count>tabnumlimit){
-            newOverTab(e,name);
+            newOverTab(name);
         }
         else if(tabnumlimit>count){
-            newTab(e,name);
+            newTab(name);
         }
-        saveTab();
+        
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     };
 
     $(document).on('click','#addbutton', function(e){
-        newTabfinal(e);
+        newTabfinal();
+        saveSession();
     });
 
     $(document).on('mousedown','.tabs .tab-links a', function(e)  {
@@ -500,8 +715,10 @@ $(document).ready(function() {
         var tabnum=$(this).attr('id');
         console.log(tabnum);
         changeSession = allseshs[tabnum];
+        console.log(allseshs)
         console.log(changeSession);
         editor.setSession(changeSession);
+        saveSession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -526,6 +743,7 @@ $(document).ready(function() {
         else{
             removeInstore($(this));
         }
+        saveSession();
     });
     $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
 
@@ -551,6 +769,7 @@ $(document).ready(function() {
         else if(tabnumlimit>=count){
             removeTab(e,$(this));
         }
+        saveSession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
         
@@ -688,12 +907,21 @@ $(document).ready(function() {
         e.preventDefault();
     }
 //once upload function works make it so that it find the extension
-    var newOverTab=function(e,name,where){
+    function newOverTab(name,id,where){
 
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
-        var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
+        var tabnum;
+        if(id==undefined){
+            tabnum = new Date().getTime() + Math.floor(Math.random()*100000);
+        }
+        else{
+            tabnum = id;
+        }
         var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
+        var newtablinksinstore=$('<li class="storedtab"><a id="' + tabnum + '" class="storedobj"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
+        var newtabwidth=8*pxInt($("body").css("font-size"));
+
         if(where==undefined){
             ultabs.append(newtablinks);
 
@@ -713,12 +941,11 @@ $(document).ready(function() {
 
             alldocs[tabnum]=doc;
             allseshs[tabnum]=session;
-            count++;
-            var storedtabwidth=$("div.tabstore").width();
-            console.log(storedtabwidth+"storedtabwidth")
+            
+            
             $("ul li.tab").eq(0).removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul");
 
-            $("ul li.storedtab").eq(count-tabnumlimit-1).css({"display":"none"});//.children("img").remove()
+            $("ul li.storedtab").eq(count-tabnumlimit).css({"display":"none"});//.children("img").remove()
 
             if($(".tabstore").hasClass("opened")==true){
                 var tabstoreheight=(1.125*(count-tabnumlimit)+2);
@@ -729,9 +956,9 @@ $(document).ready(function() {
                     $("div.tabstore").css({"overflow-y":"auto","overflow-x":"hidden"});
                 }
                 
-                $("li.storedtab").eq(count-tabnumlimit-1).delay("fast").stop(true,true).fadeIn("fast");
+                $("li.storedtab").eq(count-tabnumlimit).delay("fast").stop(true,true).fadeIn("fast");
             }
-            var newtabwidth=8*pxInt($("body").css("font-size"));
+
 
            
             //"+="+(count-tabnumlimit+2)+"em"11        
@@ -751,13 +978,18 @@ $(document).ready(function() {
 
 
 
-            $(".storebutton").val(count-tabnumlimit);
+
         }
         else if(where=="before"){
-            $("#"+tabnum).text(name);
+            $("#"+quicknum).parent("li").before(newtablinksinstore);
+            $("a#"+tabnum).text(name);
+            $("li.storedtab").eq(count-tabnumlimit-1).css({width:newtabwidth,left:0,display:"none"})
         }
-        else if(where=="after")
-            $("#"+tabnum).text(name);
+        else if(where=="after"){
+            $(".tabstore ul").append(newtablinksinstore);
+            $("a#"+tabnum).text(name);
+            $("li.storedtab").eq(count-tabnumlimit).css({width:newtabwidth,left:0,display:"none"})
+        }
 
         var entirename=$("#"+tabnum).text();
         var tempname=splitname(entirename);
@@ -765,20 +997,26 @@ $(document).ready(function() {
 
         tabnames[tabnum]=tempname;
         tabext[tabnum]=ext;
+        count++;
+        $(".storebutton").val(count-tabnumlimit);
 
-
-        e.preventDefault;
 
     };
-    var newTab = function(e,name,where){
+    function newTab(name,where,id){
         console.log("newtableft"+leftval);
         console.log("count:"+count);
 
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
-
-        var tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
+        var tabnum;
+        if(id==undefined){
+            tabnum= new Date().getTime() + Math.floor(Math.random()*100000);
+        }
+        else{
+            tabnum=id;
+        }
         var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
+        var newtabwidth=8*pxInt($("body").css("font-size"));
         if(where==undefined){
             ultabs.append(newtablinks);
             $("a#"+tabnum).text(tabnum+".py");
@@ -810,7 +1048,6 @@ $(document).ready(function() {
             else{
                 var value=startval;
             }
-            var newtabwidth=8*pxInt($("body").css("font-size"));
             $(".tab-links li").eq(count).css({left:value,width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:newtabwidth,opacity:1}).children().fadeIn();
 
             leftval[count]=value;
@@ -818,10 +1055,21 @@ $(document).ready(function() {
 
         }
         else if (where=="before"){
+            $("#"+quicknum).parent("li").before(newtablinks);
             $("a#"+tabnum).text(name);
+            leftval[count]=leftval[count-1]+leftinterval;
+            console.log(leftval[count-1]+":hereeerere")
+            console.log(count+"count where before")
+            $(".tab-links li").eq(count-1).css({width:newtabwidth,left:leftval[count-1]})
+            $(".tab-links li").eq(count).css({left:leftval[count]})
+            
         }
         else if(where=="after"){
+            ultabs.append(newtablinks);
             $("a#"+tabnum).text(name);
+            console.log(count+"count where after")
+            leftval[count]=leftval[count-1]+leftinterval;
+            $(".tab-links li").eq(count).css({left:leftval[count],width:newtabwidth})
         }
         var entirename=$("a#"+tabnum).text();
         console.log(entirename+"entirename");
@@ -836,7 +1084,7 @@ $(document).ready(function() {
         //to here
         console.log($(".tab-links li").width()+"tab width");
         console.log($("li.tab").css("font-size")+"tab font-size");
-        e.preventDefault();
+
 
     };
 
@@ -850,41 +1098,7 @@ $(document).ready(function() {
 
     };
 
-    var tabwidth;
 
-    var size=0;
-    var leftval=[startval];
-    var startval=25;
-    var leftinterval=155;
-    var tabnumlimit;
-
-    function resize(e){
-
-        var containerwidth= $(".icons").offset().left - $(".header").width();
-        console.log(pxInt($("div.sidebar").css("left")));
-        console.log($(window).width()+"wind");
-        var acewidth=$(window).width() - ($(".sidebar").width() + pxInt($("div.sidebar").css("left")))-pxInt($("div.sidebar").css("padding-left"));
-        var aceheight=$(window).height() - $(".header").height();
-        console.log(containerwidth);
-        $(".tab-container").css({width:containerwidth});
-        $("#editor").css({
-            "width":acewidth,
-            "height":aceheight
-        });
-        
-        tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
-        console.log("tabwidth"+tabwidth);
-        var lcontainerlim=17;
-        var rcontainerlim=$("div.tab-container").width()-16-19.5-$("div.menu").width();  
-        maxtabstoreheight=$("#editor").height();
-        console.log("cont"+rcontainerlim);
-
-        tabnumlimit=Math.ceil((rcontainerlim-lcontainerlim)/leftinterval);
-
-        console.log(tabnumlimit+"limit tab num");  
-        editor.getSession().setUseWrapMode(false);   
-        editor.getSession().setUseWrapMode(true);
-    }
 //alter size, and leftval appropriately
     function resizeOver(e){
       
@@ -1030,7 +1244,6 @@ $(document).ready(function() {
     $(window).on("resize",function(e){
         resizeOver();    
     });
-    resize(); 
 
     var rightlim=$("div.tab-container").width()-16-19.5-$("div.menu").width();
     var leftlim=17;
@@ -1230,7 +1443,7 @@ $(document).ready(function() {
         });
 
         $(document).unbind("mousemove");
-        
+        saveSession();
         e.preventDefault();
     });
 

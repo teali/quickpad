@@ -58,8 +58,11 @@ def direct_dl(request):
 	curFile = FileLink.objects.get(fileId=fId)	
 	if curFile.expTime < datetime.utcnow().replace(tzinfo=utc):		
 		curFile.delete()
-		return HttpResponse(status=404)	
-	response = StreamingHttpResponse(curFile.file, content_type=types_map[str(curFile.fileExt)])
+		return HttpResponse(status=404)
+	if str(curFile.fileExt) in types_map:
+		response = StreamingHttpResponse(curFile.file, content_type=types_map[str(curFile.fileExt)])
+	else:
+		response = StreamingHttpResponse(curFile.file, content_type=types_map[".txt"])
 	response['Content-Disposition'] = 'attachment; filename=%s' % (curFile.fileName + curFile.fileExt)
 	
 	return response
@@ -102,6 +105,7 @@ def change_file(request):
 			curFile.delete()
 			return HttpResponse(status=404)	
 		curFile.file.save(data['name'],ContentFile(data["file"]))
+		curFile.fileExt = data["ext"]
 		curFile.save()
 	except:
 		return HttpResponse(status=400)
