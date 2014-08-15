@@ -162,9 +162,12 @@ $(document).ready(function() {
             console.log("inittab finished")
             return;
         }
-        if(limit>tabnumlimit && i==tabnumlimit && $("div.tabstore").length==0){
+        if(limit>tabnumlimit && i+1==tabnumlimit && $("div.tabstore").length==0){
+            console.log("store is about to be created");
             createstore();
+            console.log("store was just created")
         }
+
             
         var contentfullname,contentdata,contentname,contentExt;
         var tempdoc,tempsession;
@@ -940,7 +943,7 @@ $(document).ready(function() {
         if(where==undefined && name!=undefined){
             $(".tabstore ul").append(newtablinksinstore);
             $("a#"+tabnum).text(name);
-            $("li.storedtab").eq(count-tabnumlimit).css({width:newtabwidth,left:0,display:"none"})
+            $("ul li.storedtab:last").css({"width":newtabwidth,"left":0,"display":"none"})
             console.log("where un name not un")
         }
         else if(where==undefined && name==undefined){
