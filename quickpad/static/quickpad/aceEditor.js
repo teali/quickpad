@@ -111,10 +111,9 @@ $(document).ready(function() {
     var activeid = quicknum;
 
     // editor.setSession(qsession);
-    var qwidth= 9+6.0/7+"em";
-    $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
+    // $("#quickcode").attr("id",quicknum).css({width:qwidth}).parent("li").css({"padding-right":0});
 
-    var count=1;
+    var count=0;
     
     var tabwidth;
 
@@ -153,16 +152,20 @@ $(document).ready(function() {
     }
     resize(); 
 
-    var qqReach=false;
-    var qqInStore=false;
+    // var qqReach=false;
+    // var qqInStore=false;
     var tabflow=false;
 
     function inittab(i,tablist,prevactive,limit){
         if(i>=limit){
+            if(i>=tabnumlimit && $("div.tabstore").length==1){
+                showstore();   
+            }
+            
             console.log("inittab finished")
             return;
         }
-        if(limit>tabnumlimit && i+1==tabnumlimit && $("div.tabstore").length==0){
+        if(limit>tabnumlimit && i==tabnumlimit && $("div.tabstore").length==0){
             console.log("store is about to be created");
             createstore();
             console.log("store was just created")
@@ -182,58 +185,51 @@ $(document).ready(function() {
             contentdata=data;
 
             contentExt=splitext(contentfullname);
-            console.log(qqInStore + "qqInStore")
+            // console.log(qqInStore + "qqInStore")
             contentname=splitname(contentfullname);
-            console.log(qqReach + "qqReach")
-            if(!(contentExt=="" && contentname=="QuickQode")){
-                keys[tempid]=tablist[i];
-                tabnames[tempid]=contentname;
-                tabext[tempid]=contentExt;
-                console.log(tablist[i])
-            }
+            // console.log(qqReach + "qqReach")
+
+            keys[tempid]=tablist[i];
+            tabnames[tempid]=contentname;
+            tabext[tempid]=contentExt;
+            console.log(tablist[i])
             
 
             console.log(keys+"keys after each input");
 
-            if(contentExt=="" && contentname=="QuickQode"){
-                console.log("quickpad scanned "+quicknum)
-                keys[quicknum]=tablist[i];
+            // if(contentExt=="" && contentname=="QuickQode"){
+            //     console.log("quickpad scanned "+quicknum)
+            //     keys[quicknum]=tablist[i];
 
-                tempdoc=new Document(contentdata);
-                tempsession=new Session(tempdoc);
+            //     tempdoc=new Document(contentdata);
+            //     tempsession=new Session(tempdoc);
 
-                alldocs[quicknum]=tempdoc;
-                allseshs[quicknum]=tempsession;
+            //     alldocs[quicknum]=tempdoc;
+            //     allseshs[quicknum]=tempsession;
 
-                tabnames[quicknum]=contentname;
-                tabext[quicknum]=contentExt;
+            //     tabnames[quicknum]=contentname;
+            //     tabext[quicknum]=contentExt;
 
-                if(tablist[i]==prevactive){
-                    editor.setSession(tempsession);
-                    editor.getSession().setUseWrapMode(false);   
-                    editor.getSession().setUseWrapMode(true);
-                }
-                qqReach=true;
+            //     if(tablist[i]==prevactive){
+            //         editor.setSession(tempsession);
+            //         editor.getSession().setUseWrapMode(false);   
+            //         editor.getSession().setUseWrapMode(true);
+            //     }
+            //     qqReach=true;
 
-            }
-            else if(qqInStore==false && count<tabnumlimit){
+            // }
+            if(count<tabnumlimit && tabflow==false){
                 console.log(data);
                 console.log("^that is the data")
-                if(qqReach==false){
-                    console.log(contentfullname)
-                    newTab(contentfullname,"before",tempid);
-                    console.log("tabnum"+tabnumlimit+"the i value:"+i)
-                    if(count-1==tabnumlimit){
-                        console.log("have you been here?@@@@@@@@@@@@@@@@@@@@@@@@@1")
-                        qqInStore=true;
-                        $("ul li.tab:last").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul").css({display:"none"});
-                    }
+                newTab(contentfullname,tempid);
+                console.log("before the if statement")
+                if(count==tabnumlimit){
+                    tabflow=true;
+                    console.log("inside the if satemen")
+                    console.log("tabnumlim"+tabnumlimit)
                 }
-                else{
-                    newTab(contentfullname,"after",tempid);
-                    console.log("have you been here?@@@@@@@@@$$$$$$$@@@@@@1")
-
-                }
+                console.log(tabflow)
+                
                 console.log("the i val"+i)
                 // tempid=$("li.tab").eq(i).children("a").attr("id");
                 tempdoc=new Document(contentdata);
@@ -245,6 +241,7 @@ $(document).ready(function() {
                 console.log(allseshs[tempid]+"allseshs tmp~~~~~~~~~~~~~~~~~~~~~``==="+tempid );
 
                 if(tablist[i]==prevactive){
+                    activeid=tempid;
                     editor.setSession(tempsession);
                     $("li.tab").removeClass("active")
                     $("li.storedtab").removeClass("active")
@@ -253,29 +250,17 @@ $(document).ready(function() {
                     editor.getSession().setUseWrapMode(true);
                 }
             }
-            else if(qqInStore==true){
+            else if(tabflow==true){
                 console.log("ARE YOU EVER HERE???~~~~~~~~~~~~~~~~~~~~")
-                if(qqReach==false){
-                    newOverTab(contentfullname,tempid,"before");
-                }
-                else{
-                    newOverTab(contentfullname,tempid,"after");
-                }
-                // tempid=$("li.storedtab").eq(i-tabnumlimit).children("a").attr("id");
+                newOverTab(contentfullname,tempid);
+
                 tempdoc=new Document(contentdata);
                 tempsession = new Session(tempdoc);
 
                 alldocs[tempid]=tempdoc;
                 allseshs[tempid]=tempsession;
             }
-            else if(count>=tabnumlimit){
-                newOverTab(contentfullname,tempid);
-                tempdoc=new Document(contentdata);
-                tempsession= new Session(tempdoc);
 
-                alldocs[tempid]=tempdoc;
-                allseshs[tempid]=tempsession;
-            }
             inittab(i+1,tablist,prevactive,limit)
         });  
     }
@@ -286,17 +271,14 @@ $(document).ready(function() {
         $("body").append(htmltabstore);
         $("div.icons").append(htmlicon);
 
-        var tabstoretop=$("div.tab-container").height()-1;
-        var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
-        var tabstoreleft=$(window).width()-tabstorewidth;
-
-
-        $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,opacity:0.84,"display":"block"});
+        $("div.tabstore").css({"z-index":10,"height":0,opacity:0.84,"display":"none"});
         $(".storebutton").css({"display":"block"});
         
-        $(".storebutton").val(count-tabnumlimit);
-
-        
+        // $(".storebutton").val(count-tabnumlimit);
+    }
+    function showstore(){
+        $("div.tabstore").css({"display":"block"});
+        resizeOver();
     }
     var cookiedata;
     //checks if cookies are enabled
@@ -324,6 +306,7 @@ $(document).ready(function() {
     
 
         if(tablist=="None" || tablist==""){
+            newTab("QuickQode",quicknum);
             editor.setSession(qsession);
             activeid=quicknum; 
             editor.getSession().setUseWrapMode(false);   
@@ -365,6 +348,14 @@ $(document).ready(function() {
             e.preventDefault();
             console.log(alldocs[activeid])
             saveTab();
+
+        }
+    }
+
+    disablefind = function(e){
+        if((e.ctrlKey && e.keyCode == 'f'.charCodeAt(0))||(e.ctrlKey && e.which == 70) ){
+            e.preventDefault();
+            alert("not gunna find")
 
         }
     }
@@ -579,7 +570,7 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data+ "SETE TABS SUCCESSheres?");
+                    console.log(data+ "SETE TABS SUCCESSheres?HEREEEEEEEEEE");
                 }
             });
 
@@ -634,13 +625,9 @@ $(document).ready(function() {
         // }
         $("ul.tab-links li:first").removeClass("tab").addClass("storedtab").children("a").removeClass("object").addClass("storedobj").parent("li").css("left",0).appendTo("div.tabstore > ul");
 
-        if(currid==quicknum){
-            $(this).appendTo("ul.tab-links").children("a").css({width:qwidth}).parent("li").css("display","none");
-        }
-        else{
-            // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-            $(this).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth}).parent("li").css("display","none");//.append(closehtml)
-        }
+        // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+        $(this).appendTo("ul.tab-links").children("a").css({"width":nexttabwidth}).parent("li").css("display","none");//.append(closehtml)
+
 
             
         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({left:leftval[tabnumlimit-1]}).addClass("active").fadeIn().siblings().removeClass("active");
@@ -743,6 +730,7 @@ $(document).ready(function() {
     });
 
     $(document).on('click',".tabstore .storedtab .closeButton", function(e){
+        
         if(tabnumlimit+1==count){
 
             removeInstore($(this));
@@ -765,7 +753,10 @@ $(document).ready(function() {
         saveSession();
     });
     $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
-
+        if(count==1){
+            console.log("cannot close, there is only on button left")
+            return;
+        }
         if(tabnumlimit+1==count){
 
             removeOverTab(e,$(this));
@@ -826,13 +817,9 @@ $(document).ready(function() {
 
 
 
-        if(nextstoredid==quicknum){
-            $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0},0).stop().animate({width:146,opacity:1}).children("a").animate({width:138}).fadeIn();
-        }
-        else{
-            // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-            $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0,width:0},0).animate({width:newtabwidth,opacity:1}).children("a").animate({width:nexttabwidth}).siblings().addBack().fadeIn();//.append(closehtml)
-        }
+        // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+        $("ul li.storedtab:first").appendTo("ul.tab-links").css({left:leftval[tabnumlimit-1],width:0}).children().css("display","none").parent("li").stop().animate({opacity:0,width:0},0).animate({width:newtabwidth,opacity:1}).children("a").animate({width:nexttabwidth}).siblings().addBack().fadeIn();//.append(closehtml)
+        
         $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({"display":"block"}).children().css({"display":"block"});
 
         if(that.parent('li').hasClass('active')){
@@ -926,7 +913,7 @@ $(document).ready(function() {
         e.preventDefault();
     }
 //once upload function works make it so that it find the extension
-    function newOverTab(name,id,where){
+    function newOverTab(name,id){
 
         var tabs = $('.tabs');
         var ultabs=tabs.find('ul');
@@ -940,13 +927,13 @@ $(document).ready(function() {
         var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
         var newtablinksinstore=$('<li class="storedtab"><a id="' + tabnum + '" class="storedobj"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
         var newtabwidth=8*pxInt($("body").css("font-size"));
-        if(where==undefined && name!=undefined){
+        if(name!=undefined){
             $(".tabstore ul").append(newtablinksinstore);
             $("a#"+tabnum).text(name);
             $("ul li.storedtab:last").css({"width":newtabwidth,"left":0,"display":"none"})
             console.log("where un name not un")
         }
-        else if(where==undefined && name==undefined){
+        else if(name==undefined){
             ultabs.append(newtablinks);
 
             $("#"+tabnum).text(tabnum+".py");        
@@ -997,18 +984,18 @@ $(document).ready(function() {
                 
             }
         }
-        else if(where=="before"){
-            $("#"+quicknum).parent("li").before(newtablinksinstore);
-            $("a#"+tabnum).text(name);
-            $("li.storedtab").eq(count-tabnumlimit-1).css({width:newtabwidth,left:0,display:"none"})
-            console.log("before")
-        }
-        else if(where=="after"){
-            $(".tabstore ul").append(newtablinksinstore);
-            $("a#"+tabnum).text(name);
-            $("li.storedtab").eq(count-tabnumlimit).css({width:newtabwidth,left:0,display:"none"})
-            console.log("after")
-        }
+        // else if(where=="before"){
+        //     $("#"+quicknum).parent("li").before(newtablinksinstore);
+        //     $("a#"+tabnum).text(name);
+        //     $("li.storedtab").eq(count-tabnumlimit-1).css({width:newtabwidth,left:0,display:"none"})
+        //     console.log("before")
+        // }
+        // else if(where=="after"){
+        //     $(".tabstore ul").append(newtablinksinstore);
+        //     $("a#"+tabnum).text(name);
+        //     $("li.storedtab").eq(count-tabnumlimit).css({width:newtabwidth,left:0,display:"none"})
+        //     console.log("after")
+        // }
 
         var entirename=$("#"+tabnum).text();
         var tempname=splitname(entirename);
@@ -1021,7 +1008,7 @@ $(document).ready(function() {
 
 
     };
-    function newTab(name,where,id){
+    function newTab(name,id){
         console.log("newtableft"+leftval);
         console.log("count:"+count);
 
@@ -1036,7 +1023,7 @@ $(document).ready(function() {
         }
         var newtablinks=$('<li class="tab"><a id="' + tabnum + '" class="object"></a><img class="closeButton" src="/static/quickpad/del.png"></img></li>');
         var newtabwidth=8*pxInt($("body").css("font-size"));
-        if(where==undefined){
+        if(name==undefined){
             ultabs.append(newtablinks);
             $("a#"+tabnum).text(tabnum+".py");
 
@@ -1073,23 +1060,20 @@ $(document).ready(function() {
             console.log(leftval);
 
         }
-        else if (where=="before"){
-            $("#"+quicknum).parent("li").before(newtablinks);
+        else if (name != undefined){
+            ultabs.append(newtablinks)
             $("a#"+tabnum).text(name);
-            leftval[count]=leftval[count-1]+leftinterval;
+            if(count!=0){
+                leftval[count]=leftval[count-1]+leftinterval;
+            }
+            
             console.log(leftval[count-1]+":hereeerere")
             console.log(count+"count where before")
-            $(".tab-links li").eq(count-1).css({width:newtabwidth,left:leftval[count-1]})
-            $(".tab-links li").eq(count).css({left:leftval[count]})
+            $(".tab-links li").eq(count).css({width:newtabwidth,left:leftval[count]})
+            // $(".tab-links li").eq(count).css({left:leftval[count]})
             
         }
-        else if(where=="after"){
-            ultabs.append(newtablinks);
-            $("a#"+tabnum).text(name);
-            console.log(count+"count where after")
-            leftval[count]=leftval[count-1]+leftinterval;
-            $(".tab-links li").eq(count).css({left:leftval[count],width:newtabwidth})
-        }
+
         var entirename=$("a#"+tabnum).text();
         console.log(entirename+"entirename");
         var tempname=splitname(entirename);
@@ -1154,14 +1138,10 @@ $(document).ready(function() {
                     var nextstoredid=$("ul li.storedtab:first").children("a").attr("id");
                     console.log("idstore"+nextstoredid);
                     console.log(quicknum+"quick")
-                    if(nextstoredid==quicknum){
-                        $(".tabstore ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({width:qwidth});
-                        console.log("quicknum")
-                    }
-                    else{
-                        // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
-                        $("ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});//.append(closehtml)
-                    }
+    
+                    // var closehtml="<img class='closeButton' src='/static/quickpad/del.png'></img>";
+                    $("ul li.storedtab:first").appendTo("ul.tab-links").children("a").css({"width":nexttabwidth});//.append(closehtml)
+                    
                     $("ul.tab-links li:last").removeClass("storedtab").addClass("tab").children("a").removeClass("storedobj").addClass("object").parent("li").css({display:"block"});
                     leftval[prevlimit+i]=leftval[prevlimit+i-1]+leftinterval;
                     console.log(leftval[prevlimit+i])
