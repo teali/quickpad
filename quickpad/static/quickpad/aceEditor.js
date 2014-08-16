@@ -280,49 +280,64 @@ $(document).ready(function() {
         $("div.tabstore").css({"display":"block"});
         resizeOver();
     }
-    var cookiedata;
-    //checks if cookies are enabled
-    $.get("mycookie").done(function(data){
-        console.log(data+"THE COOKIEEE");
-        console.log(data);
-        cookiedata=data;
-        var tablist=data.tabs.split("|||");
-        for(var i=0;i<tablist.length;i++){
-            if(tablist[i]==""){
-                tablist.splice(i,1);
-            }
-        }
-        var doubledel = [];
-        $.each(tablist, function(i, el){
-            if($.inArray(el, doubledel) == -1){
-                doubledel.push(el);
-            }
-        });
-        tablist=doubledel;
-        console.log("final tablist"+tablist)
-        var prevactive=data.active;
-
-        console.log(tablist+"tablist")
-    
-
-        if(tablist=="None" || tablist==""){
-            newTab("QuickQode",quicknum);
-            editor.setSession(qsession);
-            activeid=quicknum; 
-            editor.getSession().setUseWrapMode(false);   
-            editor.getSession().setUseWrapMode(true);
+    var pathname=window.location.pathname;
+    var isSingle=false;
+    function startup(){
+        var pathnamearr=pathname.split("/");
+        var lastEL=pathnamearr[pathnamearr.length-1];
+        if(lastEL.length == 8){
+            var i=0;
+            var temparr=[lastEL];
+            isSingle=true;
+            inittab(i,temparr,temparr[0],1);
         }
         else{
-            console.log(tablist.length+"tablistlength")
-            // for(var i=0;i<tablist.length;i++){
-                var i=0
-                console.log(tablist[i]+" initating and starting  i:"+i)
-                inittab(i,tablist,prevactive,tablist.length);
-                
-            // }
-        console.log("done~~~~~~~~~~~~~~~~~~~~~~~~~~```````")
+            $.get("mycookie").done(function(data){
+                console.log(data+"THE COOKIEEE");
+                console.log(data);
+                var tablist=data.tabs.split("|||");
+                for(var i=0;i<tablist.length;i++){
+                    if(tablist[i]==""){
+                        tablist.splice(i,1);
+                    }
+                }
+                var doubledel = [];
+                $.each(tablist, function(i, el){
+                    if($.inArray(el, doubledel) == -1){
+                        doubledel.push(el);
+                    }
+                });
+                tablist=doubledel;
+                console.log("final tablist"+tablist)
+                var prevactive=data.active;
+
+                console.log(tablist+"tablist")
+            
+
+                if(tablist=="None" || tablist==""){
+                    newTab("QuickQode",quicknum);
+                    editor.setSession(qsession);
+                    activeid=quicknum; 
+                    editor.getSession().setUseWrapMode(false);   
+                    editor.getSession().setUseWrapMode(true);
+                }
+                else{
+                    console.log(tablist.length+"tablistlength")
+                    // for(var i=0;i<tablist.length;i++){
+                        var i=0
+                        console.log(tablist[i]+" initating and starting  i:"+i)
+                        inittab(i,tablist,prevactive,tablist.length);
+                        
+                    // }
+                console.log("done~~~~~~~~~~~~~~~~~~~~~~~~~~```````")
+                }
+            }); 
         }
-    });
+    }
+    startup();
+
+    //checks if cookies are enabled
+    
 
     var arr = { 'file': "print \"It works!\"", 
                 'fileName' : "JSONtest", 
@@ -443,6 +458,14 @@ $(document).ready(function() {
             })
         }
     };
+    function tabOrsession(){
+        if(isSingle==false){
+            saveSession();
+        }
+        else{
+           saveTab();
+        }   
+    }
     function keygen(arr,saveid){
         $.ajax({
             url: 'au',
@@ -568,15 +591,14 @@ $(document).ready(function() {
                 type: 'POST',
                 data: JSON.stringify(tab),
                 contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data+ "SETE TABS SUCCESSheres?HEREEEEEEEEEE");
-                }
-            });
+                dataType: 'html or json'    
+            }).always(function(){
+
+            })
 
         }
     }
-    // saveSession();
+    
     
     var savingprogress=false;
     var saveprogcount=0;
@@ -585,9 +607,10 @@ $(document).ready(function() {
 
         if(savingprogress==false){
             savingprogress=true;
-            saveSession();
+            tabOrsession();
+            
             var save = setInterval(function(){
-                saveSession();
+                tabOrsession(); 
             },3000);
             var progcount = setInterval(function(){
                 saveprogcount++;
@@ -639,7 +662,7 @@ $(document).ready(function() {
             $("ul.tab-links li.tab").eq(i).stop(true,true).animate({left:leftval[i]});
             console.log("val:"+$("ul.tab-links li.tab").eq(i).children("a").html()+"left:"+leftval[i]);
         }
-        saveSession();
+        tabOrsession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -707,7 +730,7 @@ $(document).ready(function() {
 
     $(document).on('click','#addbutton', function(e){
         newTabfinal();
-        saveSession();
+        tabOrsession();
     });
 
     $(document).on('mousedown','.tabs .tab-links a', function(e)  {
@@ -724,7 +747,8 @@ $(document).ready(function() {
         console.log(allseshs)
         console.log(changeSession);
         editor.setSession(changeSession);
-        saveSession();
+        tabOrsession();
+
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
     });
@@ -750,7 +774,7 @@ $(document).ready(function() {
         else{
             removeInstore($(this));
         }
-        saveSession();
+        tabOrsession();
     });
     $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
         if(count==1){
@@ -779,7 +803,7 @@ $(document).ready(function() {
         else if(tabnumlimit>=count){
             removeTab(e,$(this));
         }
-        saveSession();
+        tabOrsession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
         
@@ -1442,7 +1466,7 @@ $(document).ready(function() {
         });
 
         $(document).unbind("mousemove");
-        saveSession();
+        tabOrsession();
         e.preventDefault();
     });
 

@@ -118,7 +118,7 @@ def change_tabs(request):
 		request.session['active'] = data['active']
 	except:
 		return HttpResponse(status=400)
-	return HttpResponse('')
+	return HttpResponse(status=200)
 
 
 def change_settings(request):
