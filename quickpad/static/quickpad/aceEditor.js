@@ -452,8 +452,9 @@ $(document).ready(function() {
                 data: JSON.stringify(edit),
                 contentType: 'application/json; charset=utf-8',
                 dataType:"json",
-                success: function(){
+                eroor: function(data){
                     console.log("edit done");
+                    console.log(data)
                 }
             })
         }
@@ -591,9 +592,15 @@ $(document).ready(function() {
                 type: 'POST',
                 data: JSON.stringify(tab),
                 contentType: 'application/json; charset=utf-8',
-                dataType: 'html or json'    
-            }).always(function(){
-
+                dataType: 'json',
+                error: function(data){
+                    if(data.status==400){
+                        saveSession();
+                    }
+                    console.log(data);
+                    console.log(data.status)
+                    console.log("inside the err")
+                }    
             })
 
         }
@@ -611,12 +618,12 @@ $(document).ready(function() {
             
             var save = setInterval(function(){
                 tabOrsession(); 
-            },3000);
+            },2000);
             var progcount = setInterval(function(){
                 saveprogcount++;
                 
                 console.log("in here"+saveprogcount)
-                if(saveprogcount>=5){//6 sec
+                if(saveprogcount>=3){//3 sec
                     saveprogcount=0;
                     savingprogress=false;
                     clearInterval(save);
@@ -712,10 +719,11 @@ $(document).ready(function() {
 
             $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:0.84,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
             //secondmark
-
+            resizeOver();
             newOverTab(name);
 
             $(".storebutton").css({"display":"block"});
+
         }
         else if(count>tabnumlimit){
             newOverTab(name);

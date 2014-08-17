@@ -100,11 +100,12 @@ def change_file(request):
 		data=json.loads(request.body)
 		if len(FileLink.objects.filter(fileId=data["fId"])) == 0:
 			return HttpResponse(status=404)
-		curFile = FileLink.objects.get(fileId=data["fId"])	
+		curFile = FileLink.objects.get(fileId=data["fId"])
 		if curFile.expTime < datetime.utcnow().replace(tzinfo=utc):		
 			curFile.delete()
 			return HttpResponse(status=404)	
-		curFile.file.save(data['name'],ContentFile(data["file"]))
+		curFile.fileName = data['name']
+		curFile.file.save(data['name'],ContentFile(data["file"]),True)
 		curFile.fileExt = data["ext"]
 		curFile.save()
 	except:
