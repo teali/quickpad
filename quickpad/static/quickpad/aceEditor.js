@@ -448,7 +448,7 @@ $(document).ready(function() {
 
             $.ajax({
                 url:"editfile",
-                tpye:"POST",
+                type:"POST",
                 data: JSON.stringify(edit),
                 contentType: 'application/json; charset=utf-8',
                 dataType:"json",
@@ -484,7 +484,7 @@ $(document).ready(function() {
     function tabrefresh(edit){
         $.ajax({
             url:"editfile",
-            tpye:"POST",
+            type:"POST",
             data: JSON.stringify(edit),
             contentType: 'application/json; charset=utf-8',
             dataType:"json",
