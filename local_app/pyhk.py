@@ -44,7 +44,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-import pythoncom, pyHook, ctypes, thread
+import pythoncom, pyHook, ctypes, thread, multiprocessing
 
 class pyhk:
     """Hotkey class extending pyhook"""
@@ -549,7 +549,9 @@ class ExecFunThread:
 
     def Start(self):
         self.running = True
-        thread.start_new_thread(self.Run, ())
+        temp = multiprocessing.Process(target=self.Run)
+        temp.start()
+        #thread.start_new_thread(self.Run, ())
 
     def IsRunning(self):
         return self.running
