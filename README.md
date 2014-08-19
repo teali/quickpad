@@ -1,4 +1,4 @@
-quickpad
+Quickpad
 ========
 
 A development tool focused on collaboration and speed
@@ -6,4 +6,4 @@ A development tool focused on collaboration and speed
 Release Date
 ============
 
-End of July, 2014
+End of August, 2014
