@@ -1,5 +1,5 @@
 
-[quickpad.io](www.quickpad.io)
+[quickpad.io](http://www.quickpad.io)
 ==============================
 
 A development tool focused on collaboration and speed
