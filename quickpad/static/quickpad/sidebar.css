@@ -50,7 +50,7 @@ select{
     width:14em;
     background: url("drop.png") no-repeat;
 
-    background-position: 151px -1px;
+    background-position: 12em;
     background-color:white;
     text-indent: 0.01px;
 	
@@ -79,12 +79,10 @@ select:focus{
   /* If you use a background image */
   select {
      background-image: none;
+     border: 1px solid #A9A9A9;
   }
 
-  /* If you use a wrapper label with :after */
-  .select-label:after {
-    content: none;
-  }
+
 }
 
 
@@ -188,13 +186,11 @@ select.desktopDropDown::-ms-expand
 
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
    select{
-    	background-position: 160px -2px;
     	border: 1px solid #A9A9A9;
 
 	}
 	select:focus::-ms-value {
 		background:none;
-		background-position: 160px -2px;
 		color:#252525;
 	}
 
