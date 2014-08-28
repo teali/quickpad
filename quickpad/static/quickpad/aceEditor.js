@@ -359,21 +359,31 @@ $(document).ready(function() {
                 'file':'thecode'};
 
     onkeydown = function(e){
-        if(e.ctrlKey && e.keyCode == 'S'.charCodeAt(0)){
-            e.preventDefault();
-            console.log(alldocs[activeid])
-            saveTab();
-
+        if(e.ctrlKey){
+            if(e.keyCode == 'S'.charCodeAt(0)){
+                e.preventDefault();
+                console.log(alldocs[activeid])
+                saveTab();
+            }
+            else if(e.keyCode == '1'.charCodeAt(0)){
+                e.preventDefault();
+                // alert("in the z")
+                console.log(alldocs[activeid]);
+                newTabfinal();
+                saveTab();
+            }
+            else if(e.keyCode == '2'.charCodeAt(0)){
+                e.preventDefault();
+                console.log(alldocs[activeid])
+                // alert("in the x")
+                removeOverTabFinal(e,$("#"+activeid).siblings(".closeButton"))
+                saveTab();
+            }
         }
+
     }
 
-    disablefind = function(e){
-        if((e.ctrlKey && e.keyCode == 'f'.charCodeAt(0))||(e.ctrlKey && e.which == 70) ){
-            e.preventDefault();
-            alert("not gunna find")
 
-        }
-    }
 
     editor.commands.addCommand({
         name: 'myCommand',
@@ -383,6 +393,25 @@ $(document).ready(function() {
             console.log(alldocs[activeid])
         }
     });
+    editor.commands.addCommand({
+        name: 'myCommand',
+        bindKey: {win: 'Ctrl-1',  mac: 'Command-1'},
+        exec: function(editor) {
+            newTabfinal();
+            saveTab();
+            console.log(alldocs[activeid])
+        }
+    });
+    editor.commands.addCommand({
+        name: 'myCommand',
+        bindKey: {win: 'Ctrl-2',  mac: 'Command-2'},
+        exec: function(editor) {
+            removeOverTabFinal(e,$("#"+activeid).siblings(".closeButton"))
+            saveTab();
+            console.log(alldocs[activeid])
+        }
+    });
+
 
 
     // var testbool=false;
@@ -461,7 +490,7 @@ $(document).ready(function() {
     };
     function tabOrsession(){
         if(isSingle==false){
-            saveSession();
+            tabOrderSave();
         }
         else{
            saveTab();
@@ -493,7 +522,75 @@ $(document).ready(function() {
             }
         })
     }
-    // saveTab();
+    var tabOrderSave = function(){
+        for(var i in keys){
+            console.log(i+"undefined deleteion"+keys[i]);
+            if(keys[i]==undefined){
+                tempkeys=keys.filter(Boolean);
+                console.log(tempkeys)
+                keys=tempkeys
+                console.log("something was deleted")
+            }
+            else{
+                console.log("nothign was deleted")
+            }
+        }
+        console.log("saving session")
+        var currentID=[];
+        console.log("save sesssion count::"+count)
+        if(count>0){
+            var starting=Math.min(count,tabnumlimit); 
+
+            for(var i=0;i<starting;i++){
+                var saveid=$("li.tab").eq(i).children("a").attr("id");
+                console.log("saveid"+saveid)
+                currentID[i]=saveid;
+                console.log(i);
+            }
+
+            if(count>tabnumlimit){
+                for(var i=0;i<count-tabnumlimit;i++){
+                    var saveid=$("li.storedtab").eq(i).children("a").attr("id");
+                    currentID[i+tabnumlimit]=saveid;
+                    console.log(saveid+"saveid now");
+                    console.log(saveid in keys)
+                }
+            }
+            var keystring=[];
+            console.log(currentID.length+"currentidlength")
+            for(var i=0;i<currentID.length;i++){
+                keystring[i]=keys[currentID[i]];
+            }
+            var tabstring=keystring.join("|||");
+            var keyactiveindex=$("#"+activeid).parent("li").index();
+            console.log(keyactiveindex)
+            console.log(activeid+" id");
+            tab['tabs']=tabstring;
+            console.log(tabstring+" tabstring")
+            console.log(currentID[keyactiveindex]+" activeid")
+            tab['active']=keys[currentID[keyactiveindex]];
+            console.log(keys)
+            console.log(keys[currentID[keyactiveindex]]+" activekey");
+
+            $.ajax({
+                url: 'settabs',
+                type: 'POST',
+                data: JSON.stringify(tab),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                error: function(data){
+                    if(data.status==400){
+                        tabOrderSave();
+                    }
+                    console.log(data);
+                    console.log(data.status)
+                    console.log("inside the err")
+                }    
+            })
+
+        }
+    }
+
     var saveSession= function(){
         for(var i in keys){
             console.log(i+"undefined deleteion"+keys[i]);
@@ -606,7 +703,10 @@ $(document).ready(function() {
         }
     }
     
-    
+    setInterval(function(){
+        saveSession();
+    },120000);// Occurs every two minutes; saveSession() is not necessary, but ensures saving.
+
     var savingprogress=false;
     var saveprogcount=0;
     function savetimer(e){
@@ -614,10 +714,10 @@ $(document).ready(function() {
 
         if(savingprogress==false){
             savingprogress=true;
-            tabOrsession();
+            saveTab();
             
             var save = setInterval(function(){
-                tabOrsession(); 
+                saveTab();
             },2000);
             var progcount = setInterval(function(){
                 saveprogcount++;
@@ -761,11 +861,10 @@ $(document).ready(function() {
         editor.getSession().setUseWrapMode(true);
     });
 
-    $(document).on('click',".tabstore .storedtab .closeButton", function(e){
-        
+    var removeTabFinal =function(e,that){
         if(tabnumlimit+1==count){
 
-            removeInstore($(this));
+            removeInstore(that,e);
 
             tabstoretop=pxInt($(".tabstore").css("border-width"));
             tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
@@ -780,18 +879,22 @@ $(document).ready(function() {
             $(".storebutton").remove();
         }
         else{
-            removeInstore($(this));
+            removeInstore(that,e);
         }
         tabOrsession();
+    }
+    $(document).on('click',".tabstore .storedtab .closeButton", function(e){
+        removeTabFinal(e,$(this));
     });
-    $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
+
+    var removeOverTabFinal = function(e,that){
         if(count==1){
             console.log("cannot close, there is only on button left")
             return;
         }
         if(tabnumlimit+1==count){
 
-            removeOverTab(e,$(this));
+            removeOverTab(e,that)
 
             tabstoretop=pxInt($(".tabstore").css("border-width"));
             tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
@@ -806,18 +909,20 @@ $(document).ready(function() {
             $(".storebutton").remove();
         }
         else if(count>tabnumlimit+1){
-            removeOverTab(e,$(this));
+            removeOverTab(e,that)
         }
         else if(tabnumlimit>=count){
-            removeTab(e,$(this));
+            removeTab(e,that);
         }
         tabOrsession();
         editor.getSession().setUseWrapMode(false);   
         editor.getSession().setUseWrapMode(true);
-        
+    }
+    $(document).on('click','.tabs .tab-links .closeButton',function(e){ 
+        removeOverTabFinal(e,$(this));
     });
 
-    var removeInstore=function(that){
+    var removeInstore=function(that,e){
         that.parent("li").fadeOut("fast").remove();
         count--;
         var tabstoreheight=(1.125*(count-tabnumlimit)+2);
