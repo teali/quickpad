@@ -29,7 +29,7 @@
 	position:fixed;
 	top:0;
 	right:20px;
-	width:55px;
+	width:auto;
 	height:50px;
 
 
@@ -41,7 +41,16 @@ div.icons>input{
 	height:1.54em;
 
 }
-
+div.icons>.dl_widget{
+	width:6em;
+	text-align:center;
+	font-family:"Century Gothic", CenturyGothic,sans-serif;
+	font-weight: bold;
+	color:white;
+	background-color: #45677F;
+	border-style: none;
+	cursor:pointer;
+}
 
 div.tabs>div{
 	float:left;

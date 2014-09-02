@@ -116,6 +116,7 @@ $(document).ready(function() {
     var count=0;
     
     var tabwidth;
+    var containerFtr =1.5;
 
     var size=0;
     var startval=25;
@@ -140,7 +141,7 @@ $(document).ready(function() {
         tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
         console.log("tabwidth"+tabwidth);
         var lcontainerlim=17;
-        var rcontainerlim=$("div.tab-container").width()-16-19.5-$("div.menu").width();  
+        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width();  
         maxtabstoreheight=$("#editor").height();
         console.log("cont"+rcontainerlim);
 
@@ -183,6 +184,7 @@ $(document).ready(function() {
             console.log(tablist[i])
             console.log("fullname:"+contentfullname)
             contentdata=data;
+
 
             contentExt=splitext(contentfullname);
             // console.log(qqInStore + "qqInStore")
@@ -280,9 +282,11 @@ $(document).ready(function() {
         $("div.tabstore").css({"display":"block"});
         resizeOver();
     }
+
     var pathname=window.location.pathname;
     var isSingle=false;
-    function startup(){
+    
+    function startup(){//asdfs
         var pathnamearr=pathname.split("/");
         var lastEL=pathnamearr[pathnamearr.length-1];
         if(lastEL.length == 8){
@@ -295,6 +299,19 @@ $(document).ready(function() {
             $.get("mycookie").done(function(data){
                 console.log(data+"THE COOKIEEE");
                 console.log(data);
+                
+                setTheme(data.style);
+                $(".theme select").val(data.style);
+
+                console.log(data.font+"chosen");
+
+                setFontSize(data.fontSize);
+                $(".size select").val(data.fontSize);
+
+                setLang(data.font);
+                $(".lang select").val(data.font);
+
+
                 var tablist=data.tabs.split("|||");
                 for(var i=0;i<tablist.length;i++){
                     if(tablist[i]==""){
@@ -349,9 +366,9 @@ $(document).ready(function() {
     var tab = { 'tabs' : 'None', 
                 'active':'None'};
 
-    var settings = {'font':'Consolas',
-                    'fontSize':'12',
-                    'style':'Monokai'};
+    var settings = {'font':'python',
+                    'fontSize':'12px',
+                    'style':'ace/theme/ambiance'};
 
     var edit = {'fId':"jfElnrd2",
                 'name':'ze name',
@@ -360,10 +377,12 @@ $(document).ready(function() {
 
     onkeydown = function(e){
         if(e.ctrlKey){
+            var tries=0;
             if(e.keyCode == 'S'.charCodeAt(0)){
                 e.preventDefault();
                 console.log(alldocs[activeid])
                 saveTab();
+                tabOrderSave(tries);
             }
             else if(e.keyCode == '1'.charCodeAt(0)){
                 e.preventDefault();
@@ -371,6 +390,7 @@ $(document).ready(function() {
                 console.log(alldocs[activeid]);
                 newTabfinal();
                 saveTab();
+                tabOrderSave(tries);
             }
             else if(e.keyCode == '2'.charCodeAt(0)){
                 e.preventDefault();
@@ -378,6 +398,7 @@ $(document).ready(function() {
                 // alert("in the x")
                 removeOverTabFinal(e,$("#"+activeid).siblings(".closeButton"))
                 saveTab();
+                tabOrderSave(tries);
             }
         }
 
@@ -389,7 +410,9 @@ $(document).ready(function() {
         name: 'myCommand',
         bindKey: {win: 'Ctrl-s',  mac: 'Command-s'},
         exec: function(editor) {
+            var tries=0;
             saveTab();
+            tabOrderSave(tries);
             console.log(alldocs[activeid])
         }
     });
@@ -397,8 +420,10 @@ $(document).ready(function() {
         name: 'myCommand',
         bindKey: {win: 'Ctrl-1',  mac: 'Command-1'},
         exec: function(editor) {
+            var tries=0;
             newTabfinal();
             saveTab();
+            tabOrderSave(tries);
             console.log(alldocs[activeid])
         }
     });
@@ -406,8 +431,10 @@ $(document).ready(function() {
         name: 'myCommand',
         bindKey: {win: 'Ctrl-2',  mac: 'Command-2'},
         exec: function(editor) {
-            removeOverTabFinal(e,$("#"+activeid).siblings(".closeButton"))
+            var tries=0;
+            removeOverTabFinal(undefined,$("#"+activeid).siblings(".closeButton"))
             saveTab();
+            tabOrderSave(tries);
             console.log(alldocs[activeid])
         }
     });
@@ -425,13 +452,37 @@ $(document).ready(function() {
     //     foo(i);
     //     console.log(i+" "+testbool)
     // }
+
+    var setTheme = function(themename){
+        //assume themename is input from a list of available themes
+        editor.setTheme(themename);
+    };
+    var setLang = function(lang){
+        //assume lang is the desired programming language chosen from a list of available
+        editor.getSession().setMode("ace/mode/"+lang);
+
+    };
+    var setFontSize =function(size){
+        document.getElementById("editor").style.fontSize=size;
+    }
+
     $("select").on("change", function(){
 
         console.log($(this).val());
 
-        settings['font']=$(".theme select").val();
-        settings['fontSize']=$(".size select").val();
-        settings['style']=$(".font select").val();
+        // var currFontStyle = $(".font select").val();
+        var currFontSize = $(".size select").val();
+        var currTheme = $(".theme select").val();
+        var currLang = $(".lang select").val();
+
+        setTheme(currTheme);
+        setLang(currLang);
+        setFontSize(currFontSize);
+        console.log(currFontSize+"mark");
+
+        settings['font']=currLang;
+        settings['fontSize']=currFontSize;
+        settings['style']=currTheme;
 
         console.log(settings);
 
@@ -441,12 +492,15 @@ $(document).ready(function() {
             data: JSON.stringify(settings),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            success: function(data) {
+            error: function(data) {
                 console.log(data);
+                console.log("settings set compl")
             }
-        });
+        })
+        saveTab();
     })
     var saveTab=function(){
+        savingprogress=true;
         console.log("saving this tab")
         if((activeid in keys)==false){
             arr['file']=alldocs[activeid].getValue();
@@ -466,6 +520,7 @@ $(document).ready(function() {
                     console.log(data['link']);
                     keys[activeid]=data['link'];
                     console.log("keysaved"+keys[activeid]+"activeid:"+activeid);
+                    savingprogress=false;
                 }
             });
         }
@@ -481,20 +536,22 @@ $(document).ready(function() {
                 data: JSON.stringify(edit),
                 contentType: 'application/json; charset=utf-8',
                 dataType:"json",
-                eroor: function(data){
+                error: function(data){
                     console.log("edit done");
                     console.log(data)
+                    if(data.status==200){
+                        savingprogress=false;
+                    }
                 }
             })
         }
     };
     function tabOrsession(){
+        saveTab();
         if(isSingle==false){
-            tabOrderSave();
+            var tries=0;
+            tabOrderSave(tries);
         }
-        else{
-           saveTab();
-        }   
     }
     function keygen(arr,saveid){
         $.ajax({
@@ -522,7 +579,7 @@ $(document).ready(function() {
             }
         })
     }
-    var tabOrderSave = function(){
+    var tabOrderSaveAction = function(tries){
         for(var i in keys){
             console.log(i+"undefined deleteion"+keys[i]);
             if(keys[i]==undefined){
@@ -579,8 +636,12 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: function(data){
-                    if(data.status==400){
-                        tabOrderSave();
+                    if(data.status==400 && tries <3){
+                        tries++;
+                        tabOrderSave(tries);
+                    }
+                    else if(data.status==200)
+{                        savingprogress=false;
                     }
                     console.log(data);
                     console.log(data.status)
@@ -591,7 +652,11 @@ $(document).ready(function() {
         }
     }
 
-    var saveSession= function(){
+    var tabOrderSave= function(tries){
+        savingprogress=true;
+        tabOrderSaveAction(tries);
+    }
+    var saveSession= function(tries){
         for(var i in keys){
             console.log(i+"undefined deleteion"+keys[i]);
             if(keys[i]==undefined){
@@ -691,8 +756,12 @@ $(document).ready(function() {
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'json',
                 error: function(data){
-                    if(data.status==400){
-                        saveSession();
+                    if(data.status==400 && tries<3){
+                        tries++;
+                        saveSession(tries);
+                    }
+                    else if(data.status==200){
+                        savingprogress=false;
                     }
                     console.log(data);
                     console.log(data.status)
@@ -702,9 +771,18 @@ $(document).ready(function() {
 
         }
     }
+    function closeEditorWarning(){
+        if(savingprogress){
+            return 'It looks like you have some unsaved changes. Do you want to leave the page, discarding your changes?'
+        }
+    }
+
+    window.onbeforeunload = closeEditorWarning
     
     setInterval(function(){
-        saveSession();
+        var tries=0;
+        savingprogress=true;
+        saveSession(tries);
     },120000);// Occurs every two minutes; saveSession() is not necessary, but ensures saving.
 
     var savingprogress=false;
@@ -796,6 +874,7 @@ $(document).ready(function() {
     });
 
     var tabstoretop, tabstorewidth, tabstoreleft,maxtabstoreheight;
+    var storeWidthVal=160;
     var nexttabwidth=8*pxInt($("body").css("font-size"));
 
     var newTabfinal = function(name){
@@ -813,7 +892,8 @@ $(document).ready(function() {
             $("div.icons").append(htmlicon);
 
             var tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
-            var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            // var tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            var tabstorewidth = storeWidthVal //containerFtr *tabwidth;
             var tabstoreleft=$(window).width()-tabstorewidth;
 
 
@@ -867,7 +947,8 @@ $(document).ready(function() {
             removeInstore(that,e);
 
             tabstoretop=pxInt($(".tabstore").css("border-width"));
-            tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            // tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left);
+            tabstorewidth = storeWidthVal //containerFtr*tabwidth; 
             tabstoreleft=$(window).width()-tabstorewidth;
 
             $("div.tabstore").stop().animate({height:0},{duration:"fast",complete:function(){
@@ -897,7 +978,8 @@ $(document).ready(function() {
             removeOverTab(e,that)
 
             tabstoretop=pxInt($(".tabstore").css("border-width"));
-            tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            // tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left);
+            tabstorewidth = storeWidthVal;//tabwidth*containerFtr
             tabstoreleft=$(window).width()-tabstorewidth;
 
             $("div.tabstore").stop().animate({height:0},{duration:"fast",complete:function(){
@@ -1228,15 +1310,7 @@ $(document).ready(function() {
 
     };
 
-    var setTheme = function(themename){
-        //assume themename is input from a list of available themes
-        editor.setTheme("ace/theme/"+themename);
-    };
-    var setLang = function(lang){
-        //assume lang is the desired programming language chosen from a list of available
-        editor.getSession.setMode("ace/mode/"+lang);
-
-    };
+    
 
 
 //alter size, and leftval appropriately
@@ -1256,7 +1330,7 @@ $(document).ready(function() {
         tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
         console.log("tabwidth"+tabwidth);
         var lcontainerlim=17;
-        var rcontainerlim=$("div.tab-container").width()-16-19.5-$("div.menu").width();  
+        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width();  
         rightlim=rcontainerlim;
         leftlim=lcontainerlim;
         maxtabstoreheight=$("#editor").height();
@@ -1328,7 +1402,8 @@ $(document).ready(function() {
                 $("div.icons").append(htmlicon);
 
                 tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
-                tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+                // tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+                tabstorewidth = storeWidthVal; //tabwidth *containerFtr;//test width
                 tabstoreleft=$(window).width()-tabstorewidth;
 
                 $("div.tabstore").css({"left":tabstoreleft,"top":tabstoretop,"width":tabstorewidth,"z-index":10,"height":0,"display":"block"}).stop().animate({opacity:0},0).stop().animate({opacity:0.84,top:"+="+(pxInt($(".tabstore").css("border-width"))/2-1)},"fast");
@@ -1360,7 +1435,8 @@ $(document).ready(function() {
         }
         if($(".tabstore").length==1){
             tabstoretop=$("div.tab-container").height()-pxInt($(".tabstore").css("border-width"))/2;
-            tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            // tabstorewidth=$(window).width()-(tabwidth+$("li.tab:last").offset().left); 
+            tabstorewidth =storeWidthVal //containerFtr*tabwidth;
             tabstoreleft=$(window).width()-tabstorewidth;
 
             $("div.tabstore").css({"left":tabstoreleft,"top":($("div.tab-container").height()-1),"width":tabstorewidth});
