@@ -141,7 +141,7 @@ $(document).ready(function() {
         tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
         console.log("tabwidth"+tabwidth);
         var lcontainerlim=17;
-        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width();  
+        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width()+$("#addbutton").width();  
         maxtabstoreheight=$("#editor").height();
         console.log("cont"+rcontainerlim);
 
@@ -1330,7 +1330,7 @@ $(document).ready(function() {
         tabwidth=$("li.tab").width()+pxInt($("li.tab").css("padding-right"));
         console.log("tabwidth"+tabwidth);
         var lcontainerlim=17;
-        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width();  
+        var rcontainerlim=$("div.tab-container").width()-$("div.menu").width()+$("#addbutton").width();  
         rightlim=rcontainerlim;
         leftlim=lcontainerlim;
         maxtabstoreheight=$("#editor").height();
